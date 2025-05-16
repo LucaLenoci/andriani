@@ -38,13 +38,23 @@
           <ul class="navbar-nav ms-auto">
             <!--begin::User Menu Dropdown-->
             <li class="nav-item dropdown user-menu">
+              <!-- Authentication -->
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+
+                    <x-responsive-nav-link :href="route('logout')"
+                            onclick="event.preventDefault();
+                                        this.closest('form').submit();">
+                        {{ __('Log Out') }}
+                    </x-responsive-nav-link>
+                </form>
               <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                 <img
                   src="{{ asset('adminlte/dist/assets/img/favicon-150x150.webp') }}"
                   class="user-image rounded-circle shadow"
                   alt="User Image"
                 />
-                <span class="d-none d-md-inline">Admin</span>
+                <span class="d-none d-md-inline">{{ Auth::user()->name }}</span>
               </a>
               <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
                 <!--begin::User Image-->
@@ -96,7 +106,7 @@
             <img
               src="{{ asset('adminlte/dist/assets/img/favicon-150x150.webp') }}"
               alt="AndrianiLogo"
-              class="brand-image opacity-75 shadow"
+              class="brand-image opacity-75"
             />
 
             <!--begin::Brand Text-->
