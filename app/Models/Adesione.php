@@ -10,21 +10,23 @@ class Adesione extends Model
     use HasFactory;
 
     protected $table = 'adesioni'; 
+    public $timestamps = false;
 
     protected $fillable = [
         'idEvento',
+        'idPuntoVendita',
         'dataInizioAdesione',
         'dataFineAdesione',
         'autorizzazioneExtraBudget',
         'richiestaFattibilitaAgenzia',
         'responsabileCuraAllestimento',
         'statoAdesione',
-        'utenteCreatoreAdesione',
+        'idUtenteCreatoreAdesione',
         'dataInserimentoAdesione',
-        'utenteModificatoreAdesione',
+        'idUtenteModificatoreAdesione',
         'dataModificaAdesione',
         'dataInvioAdesione',
-        'utenteApprovatoreAdesione',
+        'idUtenteApprovatoreAdesione',
         'dataApprovazioneAdesione',
         'corriereAdesione',
         'noteAdesione'

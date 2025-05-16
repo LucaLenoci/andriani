@@ -88,7 +88,10 @@
                     {{-- Responsabile Cura Allestimento --}}
                     <div class="form-group">
                         <label for="responsabileCuraAllestimento">Responsabile Cura Allestimento</label>
-                        <input type="text" name="responsabileCuraAllestimento" id="responsabileCuraAllestimento" class="form-control" value="{{ old('responsabileCuraAllestimento') }}">
+                        <select name="responsabileCuraAllestimento" id="responsabileCuraAllestimento" class="form-control">
+                            <option value="agenzia" {{ old('responsabileCuraAllestimento') === "agenzia" ? 'selected' : '' }}>Agenzia</option>
+                            <option value="punto vendita" {{ old('responsabileCuraAllestimento') === "punto vendita" ? 'selected' : '' }}>Punto Vendita</option>
+                        </select>
                     </div>
                 </div>
             </div>

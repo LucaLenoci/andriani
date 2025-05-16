@@ -3,56 +3,49 @@
 @section('title', 'Adesioni')
 
 @section('content')
-<div class="row">
-    <div class="col-sm-6">
-        <h3 class="mb-4">Adesioni</h3>
-    </div>
-
-    <div class="col-sm-6 text-end">
-        <a href="{{ route('adesioni.create') }}" class="btn btn-primary mb-4">Nuova Adesione</a>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3>Adesioni</h3>
+    <a href="{{ route('adesioni.create') }}" class="btn btn-primary">Nuova Adesione</a>
 </div>
 
-<div class="card">
-    <div class="card-body p-0">
-        <table class="table table-striped table-hover">
-            <thead class="table-light">
-                <tr>
-                    <th>ID</th>
-                    <th>Nome</th>
-                    <th>Stato</th>
-                    <th>Dal</th>
-                    <th>Al</th>
-                    <th>Inserita da</th>
-                    <th>Azioni</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($adesioni as $adesione)
-                    <tr>
-                        <td>{{ $adesione->id }}</td>
-                        <td>{{ $adesione->idEvento }}</td>
-                        <td>{{ $adesione->statoAdesione }}</td>
-                        <td>{{ $adesione->dataInizioAdesione ? $adesione->dataInizioAdesione->format('d/m/Y') : '' }}</td>
-                        <td>{{ $adesione->dataFineAdesione ? $adesione->dataFineAdesione->format('d/m/Y') : '' }}</td>
-                        <td>{{ $adesione->utenteCreatoreAdesione }}</td>
+@forelse($adesioni as $adesione)
+    <div class="card mb-3 shadow-sm">
+        <div class="card-body">
+            <div class="row">
+                <!-- Stato a sinistra -->
+                <div class="col-md-3 d-flex flex-column align-items-center justify-content-center">
+                    <h4 class="mb-2">ID: {{ $adesione->id }}</h4>
+                    <span class="badge bg-{{ $adesione->statoAdesione === 'inviata' ? 'success' : ($adesione->statoAdesione === 'annullata' ? 'danger' : 'secondary') }} p-3 fs-6">
+                        {{ ucfirst($adesione->statoAdesione) }}
+                    </span>
+                </div>
 
-                        <td>
-                            <a href="{{ route('adesioni.show', $adesione->id) }}" class="btn btn-sm btn-success">Visualizza</a>
-                            <a href="{{ route('adesioni.edit', $adesione->id) }}" class="btn btn-sm btn-warning">Modifica</a>
-                            <form action="{{ route('adesioni.destroy', $adesione->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Sei sicuro di voler eliminare questa adesione?');">
-                                @csrf
-                                @method('DELETE')
-                                <button class="btn btn-sm btn-danger">Elimina</button>
-                            </form>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="7">Nessuna adesione trovata.</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+                <!-- Info a destra -->
+                <div class="col-md-9">
+                    <h5 class="mb-2">{{ $adesione->evento->nomeEvento ?? 'Evento non trovato' }}</h5>
+                    <p class="mb-1"><strong>Periodo:</strong> 
+                        {{ $adesione->dataInizioAdesione?->format('d/m/Y') }} - {{ $adesione->dataFineAdesione?->format('d/m/Y') }}
+                    </p>
+                    <p class="mb-1"><strong>Creato da:</strong> 
+                        {{ $adesione->utenteCreatore->name ?? 'N/A' }}
+                    </p>
+                </div>
+
+                <div class="col-12 mt-2 d-flex flex-column align-items-end gap-2">
+                    <div class="d-flex flex-column w-auto">
+                        <a href="{{ route('adesioni.show', $adesione->id) }}" class="btn btn-sm btn-success mb-1">Visualizza</a>
+                        <a href="{{ route('adesioni.edit', $adesione->id) }}" class="btn btn-sm btn-warning mb-1">Modifica</a>
+                        <form action="{{ route('adesioni.destroy', $adesione->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Sei sicuro di voler eliminare questa adesione?');">
+                            @csrf
+                            @method('DELETE')
+                            <button class="btn btn-sm btn-danger">Elimina</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
+@empty
+    <div class="alert alert-info">Nessuna adesione trovata.</div>
+@endforelse
 @endsection
