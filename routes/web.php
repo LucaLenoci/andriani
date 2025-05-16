@@ -17,6 +17,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
     Route::get('adesioni', [AdesioniController::class, 'index'])->name('adesioni.index');
     Route::resource('adesioni', AdesioniController::class);
+    Route::get('adesioni/create', [AdesioniController::class, 'create'])->name('adesioni.create');
 });
 
 

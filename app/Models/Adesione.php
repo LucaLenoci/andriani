@@ -43,4 +43,9 @@ class Adesione extends Model
     {
         return $this->belongsTo(Evento::class, 'idEvento');
     }
+
+    public function utenteCreatore()
+    {
+        return $this->belongsTo(User::class, 'idUtenteCreatoreAdesione');
+    }
 }

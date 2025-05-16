@@ -57,7 +57,9 @@
                         $formattedValue = $value ? 'Sì' : 'No';
                     } elseif ($field === 'idEvento' && $adesione->evento) {
                         $formattedValue = $value . ' - ' . $adesione->evento->nomeEvento;
-                    } else {
+                    } elseif ($field === 'idUtenteCreatoreAdesione' && $adesione->utenteCreatore) {
+                        $formattedValue = $adesione->utenteCreatore->name;
+                    }else {
                         $formattedValue = $value;
                     }
                 @endphp
@@ -66,7 +68,7 @@
                     <div class="col-md-4 mb-3">
                         <div class="card shadow-sm">
                             <div class="card-body">
-                                <h6 class="card-subtitle mb-2 text-muted" style="text-transform: capitalize;">{{ $label }}</h6>
+                                <h6 class="card-subtitle mb-2 text-muted">{{ $label }}</h6>
                                 <p class="card-text">{{ $formattedValue }}</p>
                             </div>
                         </div>
@@ -77,7 +79,7 @@
                         <div class="col-md-12 mb-3">
                             <div class="card shadow-sm">
                                 <div class="card-body">
-                                    <h6 class="card-subtitle mb-2 text-muted" style="text-transform: capitalize;">{{ $label }}</h6>
+                                    <h6 class="card-subtitle mb-2 text-muted">{{ $label }}</h6>
                                     <p class="card-text">{{ $formattedValue }}</p>
                                 </div>
                             </div>
