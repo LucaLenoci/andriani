@@ -16,58 +16,75 @@
                 </a>
             </div>
         </div>
-        <div class="card-body p-0">
-            <table class="table table-striped table-hover">
-                <tbody>
-                    @foreach($adesione->getAttributes() as $field => $value)
-                        @php
-                            // Indica qui i campi che sono date o datetime da formattare
-                            $dateFields = ['dataInizioAdesione', 'dataFineAdesione', 'dataInserimentoAdesione', 'dataModificaAdesione', 'dataInvioAdesione', 'dataApprovazioneAdesione'];
+        <br>
+        <div class="row">
+            @foreach($adesione->getAttributes() as $field => $value)
+                @php
+                    $dateFields = ['dataInizioAdesione', 'dataFineAdesione', 'dataInserimentoAdesione', 'dataModificaAdesione', 'dataInvioAdesione', 'dataApprovazioneAdesione'];
+                    $booleanFields = ['autorizzazioneExtraBudget', 'richiestaFattibilitaAgenzia'];
 
-                            // Ottieni label
-                            $label = $fieldNames[$field] ?? ucfirst(str_replace('_', ' ', $field));
+                    $fieldNames = [
+                        'id' => 'ID Adesione',
+                        'idEvento' => 'ID e Nome Evento',
+                        'idPuntoVendita' => 'ID Punto Vendita',
+                        'dataInizioAdesione' => 'Data Inizio',
+                        'dataFineAdesione' => 'Data Fine',
+                        'autorizzazioneExtraBudget' => 'Autorizzazione Extra Budget',
+                        'richiestaFattibilitaAgenzia' => 'Richiesta Fattibilità Agenzia',
+                        'noteAdesione' => 'Note Adesione',
+                        'responsabileCuraAllestimento' => "L'Allestimento è a cura",
+                        'statoAdesione' => 'Stato Adesione',
+                        'idUtenteCreatoreAdesione' => 'Creata da',
+                        'dataInserimentoAdesione' => 'Data Inserimento',
+                        'idUtenteModificatoreAdesione' => 'Modificata da',
+                        'dataModificaAdesione' => 'Data Modifica',
+                        'dataInvioAdesione' => "Data Invio all'Agenzia",
+                        'idUtenteApprovatoreAdesione' => 'Approvata da',
+                        'dataApprovazioneAdesione' => 'Data Approvazione',
+                        'corriereAdesione' => 'Corriere'
+                    ];
 
-                            // Formatta solo se il campo è una data e il valore non è nullo
-                            if (in_array($field, $dateFields) && $value) {
-                                try {
-                                    $dt = \Illuminate\Support\Carbon::parse($value);
-                                    $formattedValue = $dt->format('d/m/Y H:i');
-                                } catch (\Exception $e) {
-                                    $formattedValue = $value;
-                                }
-                            } else {
-                                $formattedValue = $value;
-                            }
+                    $label = $fieldNames[$field] ?? ucfirst(str_replace('_', ' ', $field));
 
-                            $fieldNames = [
-                                'id' => 'ID Adesione',
-                                'idEvento' => 'ID Evento',
-                                'idPuntoVendita' => 'ID Punto Vendita',
-                                'dataInizioAdesione' => 'Data Inizio',
-                                'dataFineAdesione' => 'Data Fine',
-                                'autorizzazioneExtraBudget' => 'Autorizzazione Extra Budget',
-                                'richiestaFattibilitaAgenzia' => 'Richiesta Fattibilità Agenzia',
-                                'noteAdesione' => 'Note Adesione',
-                                'responsabileCuraAllestimento' => 'L\'Allestimento è a cura',
-                                'statoAdesione' => 'Stato Adesione',
-                                'idUtenteCreatoreAdesione' => 'Creata da',
-                                'dataInserimentoAdesione' => 'Data Inserimento',
-                                'idUtenteModificatoreAdesione' => 'Modificata da',
-                                'dataModificaAdesione' => 'Data Modifica',
-                                'dataInvioAdesione' => 'Data Invio all\'Agenzia',
-                                'idUtenteApprovatoreAdesione' => 'Approvata da',
-                                'dataApprovazioneAdesione' => 'Data Approvazione',
-                                'corriereAdesione' => 'Corriere'
-                            ];
-                            $label = $fieldNames[$field] ?? ucfirst(str_replace('_', ' ', $field));
-                        @endphp
-                        <tr>
-                            <th style="width: 30%; text-transform: capitalize; background: #f4f6f9;">{{ $label }}</th>
-                            <td>{{ $formattedValue }}</td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    if (in_array($field, $dateFields) && $value) {
+                        try {
+                            $dt = \Illuminate\Support\Carbon::parse($value);
+                            $formattedValue = $dt->format('d/m/Y H:i');
+                        } catch (\Exception $e) {
+                            $formattedValue = $value;
+                        }
+                    } elseif (in_array($field, $booleanFields)) {
+                        $formattedValue = $value ? 'Sì' : 'No';
+                    } elseif ($field === 'idEvento' && $adesione->evento) {
+                        $formattedValue = $value . ' - ' . $adesione->evento->nomeEvento;
+                    } else {
+                        $formattedValue = $value;
+                    }
+                @endphp
+
+                @if ($label !== 'Note Adesione')
+                    <div class="col-md-4 mb-3">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2 text-muted" style="text-transform: capitalize;">{{ $label }}</h6>
+                                <p class="card-text">{{ $formattedValue }}</p>
+                            </div>
+                        </div>
+                    </div>
+                @else
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <div class="card shadow-sm">
+                                <div class="card-body">
+                                    <h6 class="card-subtitle mb-2 text-muted" style="text-transform: capitalize;">{{ $label }}</h6>
+                                    <p class="card-text">{{ $formattedValue }}</p>
+                                </div>
+                            </div>
+                        </div>
+                @endif
+                
+            @endforeach
         </div>
         <div class="card-footer text-right" >
             <a href="{{ route('adesioni.index') }}" class="btn btn-success">

@@ -14,12 +14,12 @@ return new class extends Migration
         Schema::create('adesioni', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('idEvento');
+            $table->foreign('idEvento')->references('id')->on('eventi')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('idPuntoVendita');
             $table->date('dataInizioAdesione')->nullable();
             $table->date('dataFineAdesione')->nullable();
             $table->boolean('autorizzazioneExtraBudget')->default(false);
             $table->boolean('richiestaFattibilitaAgenzia')->default(false);
-            $table->text('noteAdesione')->nullable();
             $table->string('responsabileCuraAllestimento')->nullable();
             $table->string('statoAdesione')->default('bozza');
             $table->string('idUtenteCreatoreAdesione')->nullable();
@@ -30,6 +30,7 @@ return new class extends Migration
             $table->string('idUtenteApprovatoreAdesione')->nullable();
             $table->dateTime('dataApprovazioneAdesione')->nullable();
             $table->string('idCorriereAdesione')->nullable();
+            $table->text('noteAdesione')->nullable();
         });
     }
 

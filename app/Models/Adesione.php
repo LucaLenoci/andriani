@@ -17,7 +17,6 @@ class Adesione extends Model
         'dataFineAdesione',
         'autorizzazioneExtraBudget',
         'richiestaFattibilitaAgenzia',
-        'noteAdesione',
         'responsabileCuraAllestimento',
         'statoAdesione',
         'utenteCreatoreAdesione',
@@ -28,6 +27,7 @@ class Adesione extends Model
         'utenteApprovatoreAdesione',
         'dataApprovazioneAdesione',
         'corriereAdesione',
+        'noteAdesione'
     ];
 
     protected $casts = [

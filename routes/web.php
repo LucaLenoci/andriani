@@ -9,3 +9,4 @@ Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
 Route::get('adesioni', [AdesioniController::class, 'index'])->name('adesioni.index');
 Route::resource('adesioni', AdesioniController::class);
+
