@@ -8,9 +8,25 @@ use Illuminate\Support\Facades\Auth;
 
 class AdesioniController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $adesioni = Adesione::orderBy('dataInizioAdesione', 'desc')->paginate(20); // 20 per pagina
+        $query = Adesione::query();
+
+        // Ricerca per testo libero su alcuni campi
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('id', 'like', "%{$search}%")
+                  ->orWhere('idEvento', 'like', "%{$search}%")
+                  ->orWhereHas('evento', function ($subQuery) use ($search) {
+                        $subQuery->where('nomeEvento', 'like', "%{$search}%");
+                    })
+                  ->orWhere('idPuntoVendita', 'like', "%{$search}%")
+                  ->orWhere('idUtenteCreatoreAdesione', 'like', "%{$search}%");});
+        }
+
+        $adesioni = $query->orderBy('dataInizioAdesione', 'desc')->paginate(20);
+
         return view('adesioni.index', compact('adesioni'));
     }
 
