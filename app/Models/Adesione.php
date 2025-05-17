@@ -28,7 +28,7 @@ class Adesione extends Model
         'dataInvioAdesione',
         'idUtenteApprovatoreAdesione',
         'dataApprovazioneAdesione',
-        'corriereAdesione',
+        'idCorriereAdesione',
         'noteAdesione'
     ];
 

@@ -96,21 +96,7 @@
                 </div>
             </div>
 
-            {{-- SEZIONE 3: LOGISTICA --}}
-            <div class="card card-success mb-4">
-                <div class="card-header">
-                    <strong>Logistica</strong>
-                </div>
-                <div class="card-body">
-                    {{-- ID Corriere --}}
-                    <div class="form-group">
-                        <label for="idCorriereAdesione">ID Corriere Adesione</label>
-                        <input type="text" name="idCorriereAdesione" id="idCorriereAdesione" class="form-control" value="{{ old('idCorriereAdesione') }}">
-                    </div>
-                </div>
-            </div>
-
-            {{-- SEZIONE 4: NOTE --}}
+            {{-- SEZIONE 3: NOTE --}}
             <div class="card card-success mb-4">
                 <div class="card-header">
                     <strong>Note</strong>

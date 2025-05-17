@@ -41,7 +41,6 @@
                         'dataInvioAdesione' => "Data Invio all'Agenzia",
                         'idUtenteApprovatoreAdesione' => 'Approvata da',
                         'dataApprovazioneAdesione' => 'Data Approvazione',
-                        'corriereAdesione' => 'Corriere'
                     ];
 
                     $label = $fieldNames[$field] ?? ucfirst(str_replace('_', ' ', $field));

@@ -29,7 +29,6 @@ return new class extends Migration
             $table->dateTime('dataInvioAdesione')->nullable();
             $table->string('idUtenteApprovatoreAdesione')->nullable();
             $table->dateTime('dataApprovazioneAdesione')->nullable();
-            $table->string('idCorriereAdesione')->nullable();
             $table->text('noteAdesione')->nullable();
         });
     }

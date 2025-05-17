@@ -3,6 +3,29 @@
 @section('title', 'Adesioni')
 
 @section('content')
+
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul class="mb-0">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
+@if (session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
+
+@if (session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+@endif
+
 <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-2">
     <h3>Adesioni</h3>
     <form action="{{ route('adesioni.index') }}" method="GET" class="d-flex flex-column flex-sm-row gap-2">
@@ -40,12 +63,18 @@
                 <div class="col-12 col-md-2 mt-2 d-flex flex-row flex-md-column align-items-end gap-2">
                     <div class="d-flex flex-row flex-md-column w-100 gap-2">
                         <a href="{{ route('adesioni.show', $adesione->id) }}" class="btn btn-success btn-sm w-100">Visualizza</a>
-                        <a href="{{ route('adesioni.edit', $adesione->id) }}" class="btn btn-warning btn-sm w-100">Modifica</a>
-                        <form action="{{ route('adesioni.destroy', $adesione->id) }}" method="POST" class="d-inline w-100" onsubmit="return confirm('Sei sicuro di voler eliminare questa adesione?');">
-                            @csrf
-                            @method('DELETE')
-                            <button class="btn btn-danger btn-sm w-100">Elimina</button>
-                        </form>
+                        
+                        @if($adesione->statoAdesione !== 'annullata')
+                            <a href="{{ route('adesioni.edit', $adesione->id) }}" class="btn btn-warning btn-sm w-100">Modifica</a>
+                        @endif
+
+                        @if($adesione->statoAdesione !== 'inviata' && $adesione->statoAdesione !== 'annullata')
+                            <form action="{{ route('adesioni.destroy', $adesione->id) }}" method="POST" class="d-inline w-100" onsubmit="return confirm('Sei sicuro di voler eliminare questa adesione?');">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn btn-danger btn-sm w-100">Elimina</button>
+                            </form>
+                        @endif
                     </div>
                 </div>
             </div>
