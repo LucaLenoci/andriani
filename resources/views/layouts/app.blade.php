@@ -16,6 +16,36 @@
 <!-- AdminLTE CSS -->
 <link rel="stylesheet" href="{{ asset('adminlte/dist/css/adminlte.css') }}">
 
+<!-- Imposta primary color verde -->
+<style>
+  :root {
+    --bs-primary: #255459 !important;
+    --bs-primary-rgb: 37, 84, 89 !important;
+  }
+  .bg-primary, .btn-primary {
+    background-color: #255459 !important;
+    border-color: #255459 !important;
+  }
+
+
+  .pagination .page-item.active .page-link {
+    background-color: #255459;
+    border-color: #255459;
+    color: #fff;
+  }
+
+  .pagination .page-link {
+    color: #255459;
+    border-radius: 0.25rem;
+  }
+
+  .pagination .page-link:hover {
+    background-color: #1e4448;
+    color: #fff;
+  }
+
+</style>
+
 
 </head>
   <body class="layout-fixed sidebar-expand-lg sidebar-mini sidebar-collapse bg-body-tertiary">
@@ -39,15 +69,6 @@
             <!--begin::User Menu Dropdown-->
             <li class="nav-item dropdown user-menu">
               <!-- Authentication -->
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-
-                    <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault();
-                                        this.closest('form').submit();">
-                        {{ __('Log Out') }}
-                    </x-responsive-nav-link>
-                </form>
               <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                 <img
                   src="{{ asset('adminlte/dist/assets/img/favicon-150x150.webp') }}"
@@ -56,6 +77,7 @@
                 />
                 <span class="d-none d-md-inline">{{ Auth::user()->name }}</span>
               </a>
+              
               <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
                 <!--begin::User Image-->
                 <li class="user-header text-bg-primary">
@@ -90,7 +112,13 @@
               </ul>
             </li>
             <!--end::User Menu Dropdown-->
-          </ul>
+            </ul>
+            <form method="POST" action="{{ route('logout') }}" class="d-inline ms-4">
+            @csrf
+            <button type="submit" class="dropdown-item text-danger">
+              <i class="fas fa-sign-out-alt me-2"></i> {{ __('Log Out') }}
+            </button>
+            </form>
           <!--end::End Navbar Links-->
         </div>
         <!--end::Container-->
@@ -137,6 +165,12 @@
                 <a href="{{ route('adesioni.index') }}" class="nav-link">
                   <i class="nav-icon bi bi-clipboard-fill"></i>
                   <p>Adesioni</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('eventi.index') }}" class="nav-link">
+                    <i class="nav-icon bi bi-calendar-event-fill"></i>
+                  <p>Eventi</p>
                 </a>
               </li>
             </ul>

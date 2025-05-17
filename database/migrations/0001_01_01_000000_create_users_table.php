@@ -35,6 +35,19 @@ return new class extends Migration
             $table->longText('payload');
             $table->integer('last_activity')->index();
         });
+
+        // Insert default user
+        \DB::table('users')->insert([
+            'id' => 1,
+            'name' => 'promoit',
+            'email' => 'l.lenoci@promomedianet.it',
+            'email_verified_at' => null,
+            'password' => '$2y$12$qUhgRZ3ZxC3H7Gogt.6lX.ljc4hORTgJFNX2Z1PjwtWesOjtGKetq',
+            'remember_token' => null,
+            'created_at' => '2025-05-17 08:40:43',
+            'updated_at' => '2025-05-17 08:40:43',
+        ]);
+
     }
 
     /**

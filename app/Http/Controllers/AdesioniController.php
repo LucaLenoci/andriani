@@ -83,7 +83,7 @@ class AdesioniController extends Controller
             return redirect()->route('adesioni.index')->with('success', 'Adesione creata con successo.');
         } catch (Exception $e) {
             \Log::error('Errore durante la creazione dell\'adesione: ' . $e->getMessage());
-            return redirect()->back()->withInput()->with('error', 'Errore durante la creazione dell\'adesione.');
+            return redirect()->back()->withInput()->withErrors(['error' => 'Errore durante la creazione dell\'adesione: ' . $e->getMessage()]);
         }
     }
 

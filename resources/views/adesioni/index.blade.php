@@ -35,6 +35,13 @@
     <a href="{{ route('adesioni.create') }}" class="btn btn-primary mt-2 mt-md-0">Nuova Adesione</a>
 </div>
 
+<div class="d-flex justify-content-center mb-4">
+    <div>
+        {{ $adesioni->withQueryString()->links('pagination::bootstrap-4') }}
+    </div>
+</div>
+
+
 @forelse($adesioni as $adesione)
     <div class="card mb-3 shadow-sm">
         <div class="card-body">
@@ -83,4 +90,13 @@
 @empty
     <div class="alert alert-info">Nessuna adesione trovata.</div>
 @endforelse
+
+<div class="d-flex justify-content-center mb-4">
+    <div>
+        {{ $adesioni->withQueryString()->links('pagination::bootstrap-4') }}
+    </div>
+</div>
+
 @endsection
+
+

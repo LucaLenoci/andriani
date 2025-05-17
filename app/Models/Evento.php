@@ -12,7 +12,6 @@ class Evento extends Model
     protected $table = 'eventi'; 
 
     protected $fillable = [
-        'idTipologiaEvento',
         'nomeEvento',
         'annoEvento',
         'dataInizioEvento',
@@ -33,4 +32,8 @@ class Evento extends Model
         'dataModificaEvento' => 'datetime'
     ];
 
+    public function utenteCreatore()
+    {
+        return $this->belongsTo(User::class, 'idUtenteCreatoreEvento');
+    }
 }

@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('eventi', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('idTipologiaEvento');
             $table->string('nomeEvento')->nullable();
             $table->unsignedBigInteger('annoEvento');
             $table->date('dataInizioEvento')->nullable();
