@@ -99,8 +99,7 @@ public function create(Request $request)
         }
     }
 
-    public function edit($id)
-    {
+    public function edit(Request $request, $id)    {
         try {
             $adesione = Adesione::findOrFail($id);
 
@@ -109,8 +108,24 @@ public function create(Request $request)
             }
 
             $eventi = Evento::all();
+            $puntiVendita = collect(); // Vuoto di default
 
-            return view('adesioni.edit', compact('adesione', 'eventi'));
+            if ($request->has('idEvento') && !empty($request->idEvento)) {
+                $eventoId = $request->idEvento;
+                $puntiVendita = \DB::table('eventopuntivendita')
+                    ->join('puntivendita', 'eventopuntivendita.idPuntoVendita', '=', 'puntivendita.id')
+                    ->select('puntivendita.*')
+                    ->where('eventopuntivendita.idEvento', $eventoId)
+                    ->get();
+            }else{
+                $puntiVendita = \DB::table('eventopuntivendita')
+                    ->join('puntivendita', 'eventopuntivendita.idPuntoVendita', '=', 'puntivendita.id')
+                    ->select('puntivendita.*')
+                    ->where('eventopuntivendita.idEvento', $adesione->idEvento)
+                    ->get();
+            }
+
+            return view('adesioni.edit', compact('adesione', 'eventi', 'puntiVendita'));
         } catch (Exception $e) {
             \Log::error('Errore durante il caricamento del form di modifica: ' . $e->getMessage());
             return redirect()->route('adesioni.index')->with('error', 'Errore durante il caricamento del form di modifica.');
@@ -124,6 +139,10 @@ public function create(Request $request)
 
             if ($adesione->statoAdesione === 'annullata') {
                 return redirect()->route('adesioni.index')->with('error', 'Non è possibile modificare un\'adesione annullata.');
+            }
+
+            if(empty($request->idEvento)){
+                $request->merge(['idEvento' => $adesione->idEvento]);
             }
 
             $request->validate([

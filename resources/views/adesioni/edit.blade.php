@@ -19,9 +19,7 @@
             </div>
         @endif
 
-<form action="{{ route('adesioni.update', $adesione->id) }}" method="POST">
-    @csrf
-    @method('PUT')
+
 
     {{-- SEZIONE 1: DATI PRINCIPALI --}}
     <div class="card card-success mb-4">
@@ -29,25 +27,41 @@
             <strong>Dati Principali</strong>
         </div>
         <div class="card-body">
-            {{-- Evento --}}
-            <div class="form-group">
-                <label for="idEvento">Evento</label>
-                <select name="idEvento" id="idEvento" class="form-control" required>
-                    <option value="">-- Seleziona Evento --</option>
-                    @foreach($eventi as $evento)
-                        <option value="{{ $evento->id }}"
-                            {{ (old('idEvento', $adesione->idEvento) == $evento->id) ? 'selected' : '' }}>
-                            {{ $evento->nomeEvento ?? 'Evento #' . $evento->id }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
+            <form action="{{ route('adesioni.edit', $adesione->id) }}" method="GET">
+                {{-- Campo Evento --}}
+                <div class="form-group">
+                    <label for="idEvento">Evento</label>
+                    <select name="idEvento" id="idEvento" class="form-control" required onchange="this.form.submit()">
+                        @foreach($eventi as $evento)
+                            <option value="{{ $evento->id }}" 
+                                {{ (request('idEvento', $adesione->idEvento) == $evento->id) ? 'selected' : '' }}>
+                                {{ $evento->nomeEvento ?? 'Evento #' . $evento->id }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            </form>
+
+            <form action="{{ route('adesioni.update', $adesione->id) }}" method="POST">
+            @csrf
+            @method('PUT')
+
+
+            {{-- Campo Evento --}}
+            <input type="hidden" name="idEvento" value="{{ request('idEvento') }}">
 
             {{-- Punto Vendita --}}
             <div class="form-group">
-                <label for="idPuntoVendita">ID Punto Vendita</label>
-                <input type="text" name="idPuntoVendita" id="idPuntoVendita" class="form-control"
-                    value="{{ old('idPuntoVendita', $adesione->idPuntoVendita) }}" required>
+                <label for="idPuntoVendita">Punto Vendita</label>
+                <select name="idPuntoVendita" id="idPuntoVendita" class="form-control" required>
+                    <option value="">-- Seleziona Punto Vendita --</option>
+                    @foreach($puntiVendita as $puntoVendita)
+                        <option value="{{ $puntoVendita->id }}"
+                            {{ old('idPuntoVendita', $adesione->idPuntoVendita) == $puntoVendita->id ? 'selected' : '' }}>
+                            {{ 'CODICE [' . $puntoVendita->codicePuntoVendita . '] - ' . ($puntoVendita->ragioneSocialePuntoVendita ?? 'Punto Vendita #ID[' . $puntoVendita->id . ']') }}
+                        </option>
+                    @endforeach
+                </select>
             </div>
 
             {{-- Data Inizio --}}

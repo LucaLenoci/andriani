@@ -56,6 +56,8 @@
                         $formattedValue = $value ? 'Sì' : 'No';
                     } elseif ($field === 'idEvento' && $adesione->evento) {
                         $formattedValue = $value . ' - ' . $adesione->evento->nomeEvento;
+                    }elseif ($field === 'idPuntoVendita' && $adesione->puntoVendita) {
+                        $formattedValue = $adesione->puntoVendita->codicePuntoVendita . ' - ' . $adesione->puntoVendita->ragioneSocialePuntoVendita;
                     } elseif ($field === 'idUtenteCreatoreAdesione' && $adesione->utenteCreatore) {
                         $formattedValue = $adesione->utenteCreatore->name;
                     }else {
