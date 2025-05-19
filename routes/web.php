@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AdesioniController;
 use App\Http\Controllers\EventiController;
+use App\Http\Controllers\PuntiVenditaController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -17,6 +18,7 @@ Route::middleware('auth')->group(function () {
     Route::get('adesioni/create', [AdesioniController::class, 'create'])->name('adesioni.create');
     Route::get('eventi', [EventiController::class, 'index'])->name('eventi.index');
     Route::resource('eventi', EventiController::class);
+    Route::get('/punti-vendita/search', [PuntiVenditaController::class, 'search'])->name('punti-vendita.search');
 });
 
 

@@ -47,16 +47,28 @@ class AdesioniController extends Controller
         }
     }
 
-    public function create()
-    {
-        try {
-            $eventi = Evento::all();
-            return view('adesioni.create', compact('eventi'));
-        } catch (Exception $e) {
-            \Log::error('Errore durante il caricamento del form di creazione: ' . $e->getMessage());
-            return redirect()->route('adesioni.index')->with('error', 'Errore durante il caricamento del form di creazione.');
+public function create(Request $request)
+{
+    try {
+        $eventi = Evento::all();
+        $puntiVendita = collect(); // Vuoto di default
+
+        if ($request->has('idEvento') && !empty($request->idEvento)) {
+            $eventoId = $request->idEvento;
+            $puntiVendita = \DB::table('eventopuntivendita')
+                ->join('puntivendita', 'eventopuntivendita.idPuntoVendita', '=', 'puntivendita.id')
+                ->select('puntivendita.*')
+                ->where('eventopuntivendita.idEvento', $eventoId)
+                ->get();
         }
+
+        return view('adesioni.create', compact('eventi', 'puntiVendita'));
+
+    } catch (Exception $e) {
+        \Log::error('Errore durante il caricamento del form di creazione: ' . $e->getMessage());
+        return redirect()->route('adesioni.index')->with('error', 'Errore durante il caricamento del form di creazione.');
     }
+}
 
     public function store(Request $request)
     {

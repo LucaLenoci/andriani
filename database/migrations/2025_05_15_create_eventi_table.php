@@ -24,6 +24,7 @@ return new class extends Migration
             $table->dateTime('dataInserimentoEvento')->nullable();
             $table->string('idUtenteModificatoreEvento')->nullable();
             $table->dateTime('dataModificaEvento')->nullable();
+            $table->string('statoEvento')->nullable();
         });
     }
 

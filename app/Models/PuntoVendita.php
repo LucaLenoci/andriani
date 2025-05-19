@@ -2,22 +2,31 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Adesione extends Model
-{
-    use HasFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-    protected $table = 'puntiVendita'; 
-    public $timestamps = false;
+
+class PuntoVendita extends Model
+{
+    protected $table = 'puntivendita';
+
+    protected $primaryKey = 'id';
 
     protected $fillable = [
-        'idEvento',
+        'codicePuntoVendita',
+        'distributorePuntoVendita',
+        'insegnaPuntoVendita',
+        'ragioneSocialePuntoVendita',
+        'indirizzoPuntoVendita',
+        'capPuntoVendita',
+        'cittaPuntoVendita',
+        'provinciaPuntoVendita',
+        'idRegionePuntoVendita',
     ];
 
-    protected $casts = [
-        'dataInizioAdesione' => 'datetime',
-    ];
-
+    public function regione()
+    {
+        return $this->belongsTo(Regione::class, 'idRegionePuntoVendita');
+    }
 }

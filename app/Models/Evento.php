@@ -10,6 +10,8 @@ class Evento extends Model
     use HasFactory;
 
     protected $table = 'eventi'; 
+    public $timestamps = false;
+
 
     protected $fillable = [
         'nomeEvento',
@@ -22,7 +24,8 @@ class Evento extends Model
         'idUtenteCreatoreEvento',
         'dataInserimentoEvento',
         'idUtenteModificatoreEvento',
-        'dataModificaEvento'
+        'dataModificaEvento',
+        'statoEvento'
     ];
 
     protected $casts = [
@@ -36,4 +39,14 @@ class Evento extends Model
     {
         return $this->belongsTo(User::class, 'idUtenteCreatoreEvento');
     }
+
+    public function puntiVendita()
+{
+    return $this->belongsToMany(
+        PuntoVendita::class,
+        'eventipuntivendita',
+        'idEvento',      // Foreign key su eventipuntivendita per Evento
+        'idPuntoVendita' // Foreign key su eventipuntivendita per PuntoVendita
+    );
+}
 }
