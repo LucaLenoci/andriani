@@ -27,7 +27,7 @@ class EventiController extends Controller
             return view('eventi.index', compact('eventi'));
         } catch (Exception $e) {
             \Log::error('Errore durante il caricamento degli eventi: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Errore durante il caricamento degli eventi.');
+            return redirect()->back()->withInput()->withErrors(['error' => 'Errore durante il caricamento degli eventi: ' . $e->getMessage()]);
         }
     }
 
@@ -52,7 +52,7 @@ class EventiController extends Controller
             return view('eventi.show', compact('evento', 'puntiVendita'));
         } catch (Exception $e) {
             \Log::error('Errore durante il caricamento dell\'evento: ' . $e->getMessage());
-            return redirect()->route('eventi.index')->with('error', 'Errore durante il caricamento dell\'evento.');
+            return redirect()->route('eventi.index')->withInput()->withErrors(['error' => 'Errore durante il caricamento dell\'evento: ' . $e->getMessage()]);
         }
     }
 
@@ -63,7 +63,7 @@ class EventiController extends Controller
             return view('eventi.create', ['puntiVendita' => $puntiVendita]);
         } catch (Exception $e) {
             \Log::error('Errore durante il caricamento del form di creazione: ' . $e->getMessage());
-            return redirect()->route('eventi.index')->with('error', 'Errore durante il caricamento del form di creazione.');
+            return redirect()->route('eventi.index')->withInput()->withErrors(['error' => 'Errore durante il caricamento del form di creazione: ' . $e->getMessage()]);
         }
     }
 
@@ -72,20 +72,41 @@ class EventiController extends Controller
     {
         try {
             $request->validate([
-                'nomeEvento' => 'required|max:255',
-                'annoEvento' => 'required|integer',
-                'dataInizioEvento' => 'required|date',
-                'dataFineEvento' => 'required|date|after_or_equal:dataInizioEvento',
-                'richiestaPresenzaPromoter' => 'nullable|boolean',
-                'previstaAttivitaDiCaricamento' => 'nullable|boolean',
-                'previstaAttivitaDiAllestimento' => 'nullable|boolean',
-                'selectedPuntiVendita' => 'array|nullable',
-                'selectedPuntiVendita.*' => 'exists:puntivendita,id',
+                'nomeEvento' => ['required', 'max:255'],
+                'annoEvento' => ['required', 'integer', 'min:' . date('Y'), 'max:2100'],
+                'dataInizioEvento' => ['required', 'date', 'after_or_equal:dataFineEvento'],
+                'dataFineEvento' => ['required', 'date', 'after_or_equal:dataInizioEvento'],
+                'richiestaPresenzaPromoter' => ['nullable', 'boolean'],
+                'previstaAttivitaDiCaricamento' => ['nullable', 'boolean'],
+                'previstaAttivitaDiAllestimento' => ['nullable', 'boolean'],
+                'selectedPuntiVendita' => ['required', 'array', 'min:1'],
+                'selectedPuntiVendita.*' => ['exists:puntivendita,id'],
+            ], [
+                'nomeEvento.required' => 'Il nome dell\'evento è obbligatorio.',
+                'nomeEvento.max' => 'Il nome dell\'evento non può superare 255 caratteri.',
+                'annoEvento.required' => 'L\'anno dell\'evento è obbligatorio.',
+                'annoEvento.integer' => 'L\'anno dell\'evento deve essere un numero intero.',
+                'annoEvento.min' => 'L\'anno dell\'evento non può essere precedente all\'anno corrente.',
+                'annoEvento.max' => 'L\'anno dell\'evento non può superare il 2100.',
+                'dataInizioEvento.required' => 'La data di inizio evento è obbligatoria.',
+                'dataInizioEvento.date' => 'La data di inizio evento deve essere una data valida.',
+                'dataInizioEvento.after_or_equal' => 'La data di inizio evento deve essere uguale o successiva alla data di fine.',
+                'dataFineEvento.required' => 'La data di fine evento è obbligatoria.',
+                'dataFineEvento.date' => 'La data di fine evento deve essere una data valida.',
+                'dataFineEvento.after_or_equal' => 'La data di fine evento deve essere uguale o successiva alla data di inizio.',
+                'richiestaPresenzaPromoter.boolean' => 'Il campo richiesta presenza promoter deve essere vero o falso.',
+                'previstaAttivitaDiCaricamento.boolean' => 'Il campo prevista attività di caricamento deve essere vero o falso.',
+                'previstaAttivitaDiAllestimento.boolean' => 'Il campo prevista attività di allestimento deve essere vero o falso.',
+                'selectedPuntiVendita.required' => 'Seleziona almeno un punto vendita.',
+                'selectedPuntiVendita.array' => 'Il campo punti vendita deve essere un array.',
+                'selectedPuntiVendita.min' => 'Seleziona almeno un punto vendita.',
+                'selectedPuntiVendita.*.exists' => 'Uno o più punti vendita selezionati non sono validi.',
             ]);
 
             $request->merge([
                 'idUtenteCreatoreEvento' => Auth::user()->id,
                 'dataInserimentoEvento' => now('Europe/Rome'),
+                'statoEvento' => 'creato',
             ]);
 
             $evento = Evento::create($request->except('selectedPuntiVendita'));
@@ -130,45 +151,74 @@ class EventiController extends Controller
             return view('eventi.edit', compact('evento', 'puntiVendita', 'puntiVenditaSelezionati'));
         } catch (Exception $e) {
             \Log::error('Errore durante il caricamento del form di modifica: ' . $e->getMessage());
-            return redirect()->route('eventi.index')->with('error', 'Errore durante il caricamento del form di modifica.');
+            return redirect()->back()->withInput()->withErrors(['error' => 'Errore durante il caricamento del form di modifica: ' . $e->getMessage()]);
         }
     }
 
 
     public function update(Request $request, $id)
     {
-        $evento = Evento::findOrFail($id);
+        try {
+            $evento = Evento::findOrFail($id);
 
-        $data = $request->validate([
-            'nomeEvento' => 'required|string',
-            'annoEvento' => 'required|integer',
-            'dataInizioEvento' => 'required|date',
-            'dataFineEvento' => 'nullable|date',
-            'richiestaPresenzaPromoter' => 'required|boolean',
-            'previstaAttivitaDiCaricamento' => 'required|boolean',
-            'previstaAttivitaDiAllestimento' => 'required|boolean',
-            'selectedPuntiVendita' => 'array',
-            'selectedPuntiVendita.*' => 'integer|exists:puntivendita,id',
-        ]);
+            $data = $request->validate([
+                'nomeEvento' => 'required|string',
+                'annoEvento' => 'required|integer|min:' . date('Y') . '|max:2100',
+                'dataInizioEvento' => 'required|date|before_or_equal:dataFineEvento',
+                'dataFineEvento' => 'required|date|after_or_equal:dataInizioEvento',
+                'richiestaPresenzaPromoter' => 'required|boolean',
+                'previstaAttivitaDiCaricamento' => 'required|boolean',
+                'previstaAttivitaDiAllestimento' => 'required|boolean',
+                'selectedPuntiVendita' => 'required|array|min:1',
+                'selectedPuntiVendita.*' => 'integer|exists:puntivendita,id',
+            ], [
+                'nomeEvento.required' => 'Il nome dell\'evento è obbligatorio.',
+                'nomeEvento.string' => 'Il nome dell\'evento deve essere una stringa.',
+                'annoEvento.required' => 'L\'anno dell\'evento è obbligatorio.',
+                'annoEvento.integer' => 'L\'anno dell\'evento deve essere un numero intero.',
+                'annoEvento.min' => 'L\'anno dell\'evento non può essere precedente all\'anno corrente.',
+                'annoEvento.max' => 'L\'anno dell\'evento non può superare il 2100.',
+                'dataFineEvento.required' => 'La data di fine evento è obbligatoria.',
+                'dataInizioEvento.required' => 'La data di inizio evento è obbligatoria.',
+                'dataInizioEvento.date' => 'La data di inizio evento deve essere una data valida.',
+                'dataInizioEvento.before_or_equal' => 'La data di inizio evento deve essere uguale o successiva alla data di fine.',
+                'dataFineEvento.date' => 'La data di fine evento deve essere una data valida.',
+                'dataFineEvento.after_or_equal' => 'La data di fine evento deve essere uguale o successiva alla data di inizio.',
+                'richiestaPresenzaPromoter.required' => 'Il campo richiesta presenza promoter è obbligatorio.',
+                'richiestaPresenzaPromoter.boolean' => 'Il campo richiesta presenza promoter deve essere vero o falso.',
+                'previstaAttivitaDiCaricamento.required' => 'Il campo prevista attività di caricamento è obbligatorio.',
+                'previstaAttivitaDiCaricamento.boolean' => 'Il campo prevista attività di caricamento deve essere vero o falso.',
+                'previstaAttivitaDiAllestimento.required' => 'Il campo prevista attività di allestimento è obbligatorio.',
+                'previstaAttivitaDiAllestimento.boolean' => 'Il campo prevista attività di allestimento deve essere vero o falso.',
+                'selectedPuntiVendita.required' => 'Seleziona almeno un punto vendita.',
+                'selectedPuntiVendita.array' => 'Il campo punti vendita deve essere un array.',
+                'selectedPuntiVendita.min' => 'Seleziona almeno un punto vendita.',
+                'selectedPuntiVendita.*.integer' => 'L\'ID del punto vendita deve essere un numero intero.',
+                'selectedPuntiVendita.*.exists' => 'Uno o più punti vendita selezionati non sono validi.',
+            ]);
 
-        // Aggiorna dati evento
-        $evento->update($data);
+            // Aggiorna dati evento
+            $evento->update($data);
 
-        // Aggiorna pivot eventipuntivendita: cancella quelli vecchi e inserisci quelli nuovi
-        \DB::table('eventopuntivendita')->where('idEvento', $evento->id)->delete();
+            // Aggiorna pivot eventopuntivendita: cancella quelli vecchi e inserisci quelli nuovi
+            \DB::table('eventopuntivendita')->where('idEvento', $evento->id)->delete();
 
-        if (!empty($data['selectedPuntiVendita'])) {
+            if (!empty($data['selectedPuntiVendita'])) {
             $insert = [];
             foreach ($data['selectedPuntiVendita'] as $idPuntoVendita) {
                 $insert[] = [
-                    'idEvento' => $evento->id,
-                    'idPuntoVendita' => $idPuntoVendita,
+                'idEvento' => $evento->id,
+                'idPuntoVendita' => $idPuntoVendita,
                 ];
             }
             \DB::table('eventopuntivendita')->insert($insert);
-        }
+            }
 
-        return redirect()->route('eventi.index')->with('success', 'Evento aggiornato correttamente');
+            return redirect()->route('eventi.index')->with('success', 'Evento aggiornato con successo.');
+        } catch (Exception $e) {
+            \Log::error('Errore durante la modifica dell\'evento: ' . $e->getMessage());
+            return redirect()->back()->withInput()->withErrors(['error' => 'Errore durante la modifica dell\'evento: ' . $e->getMessage()]);
+        }
     }
 
     public function destroy($id)
@@ -176,15 +226,13 @@ class EventiController extends Controller
         try {
             $evento = Evento::findOrFail($id);
 
-            // Elimina le associazioni nella tabella pivot
-            \DB::table('eventopuntivendita')->where('idEvento', $evento->id)->delete();
-
-            $evento->delete();
+            //set statoEvento a "annullato"
+            $evento->update(['statoEvento' => 'annullato']);
 
             return redirect()->route('eventi.index')->with('success', 'Evento eliminato con successo.');
         } catch (Exception $e) {
             \Log::error('Errore durante l\'eliminazione dell\'evento: ' . $e->getMessage());
-            return redirect()->route('eventi.index')->with('error', 'Errore durante l\'eliminazione dell\'evento.');
+            return redirect()->route('eventi.index')->withInput()->withErrors(['error' => 'Errore durante l\'eliminazione dell\'evento: ' . $e->getMessage()]);
         }
     }
 }

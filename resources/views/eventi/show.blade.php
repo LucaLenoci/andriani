@@ -7,6 +7,29 @@
 @stop
 
 @section('content')
+
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if (session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
+
 @if(isset($evento))
     @php
         // Definizione campi evento e formattazioni
@@ -24,7 +47,8 @@
             'idUtenteModificatoreEvento' => 'Modificato da',
             'dataModificaEvento' => 'Data Modifica',
         ];
-        $eventoDateFields = ['dataInizioEvento', 'dataFineEvento', 'dataInserimentoEvento', 'dataModificaEvento'];
+        $eventoDateTimeFields = ['dataInserimentoEvento', 'dataModificaEvento'];
+        $eventoDateFields = ['dataInizioEvento', 'dataFineEvento'];
         $eventoBooleanFields = ['richiestaPresenzaPromoter', 'previstaAttivitaDiCaricamento', 'previstaAttivitaDiAllestimento'];
         
     @endphp
@@ -33,7 +57,7 @@
         <div class="card-header">
             <h3 class="card-title">Informazioni Dettagliate</h3>
             <div class="card-tools">
-                <a href="{{ route('adesioni.index') }}" class="btn btn-sm btn-light" title="Torna alla lista" >
+                <a href="{{ route('eventi.index') }}" class="btn btn-sm btn-light" title="Torna alla lista" >
                     <i class="fas fa-arrow-left"></i> Indietro
                 </a>
             </div>
@@ -44,10 +68,17 @@
                 @foreach($eventoFields as $field => $label)
                     @php
                         $value = $evento->$field ?? '';
-                        if (in_array($field, $eventoDateFields) && $value) {
+                        if (in_array($field, $eventoDateTimeFields) && $value) {
                             try {
                                 $dt = \Illuminate\Support\Carbon::parse($value);
                                 $formattedValue = $dt->format('d/m/Y H:i');
+                            } catch (\Exception $e) {
+                                $formattedValue = $value;
+                            }
+                        } elseif (in_array($field, $eventoDateFields) && $value) {
+                            try {
+                                $dt = \Illuminate\Support\Carbon::parse($value);
+                                $formattedValue = $dt->format('d/m/Y');
                             } catch (\Exception $e) {
                                 $formattedValue = $value;
                             }

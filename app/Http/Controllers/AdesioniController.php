@@ -32,7 +32,7 @@ class AdesioniController extends Controller
             return view('adesioni.index', compact('adesioni'));
         } catch (Exception $e) {
             \Log::error('Errore durante il caricamento delle adesioni: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Errore durante il caricamento delle adesioni.');
+            return redirect()->back()->withInput()->withErrors(['error' => 'Errore durante il caricamento delle adesioni: ' . $e->getMessage()]);
         }
     }
 
@@ -43,7 +43,7 @@ class AdesioniController extends Controller
             return view('adesioni.show', compact('adesione'));
         } catch (Exception $e) {
             \Log::error('Errore durante il caricamento dell\'adesione: ' . $e->getMessage());
-            return redirect()->route('adesioni.index')->with('error', 'Errore durante il caricamento dell\'adesione.');
+            return redirect()->route('adesioni.index')->withInput()->withErrors(['error' => 'Errore durante il caricamento dell\'adesione: ' . $e->getMessage()]);
         }
     }
 
@@ -66,7 +66,7 @@ public function create(Request $request)
 
     } catch (Exception $e) {
         \Log::error('Errore durante il caricamento del form di creazione: ' . $e->getMessage());
-        return redirect()->route('adesioni.index')->with('error', 'Errore durante il caricamento del form di creazione.');
+        return redirect()->route('adesioni.index')->withInput()->withErrors(['error' => 'Errore durante la creazione dell\'adesione: ' . $e->getMessage()]);
     }
 }
 
@@ -76,12 +76,59 @@ public function create(Request $request)
             $request->validate([
                 'idEvento' => 'required|exists:eventi,id',
                 'idPuntoVendita' => 'required|max:255',
-                'dataInizioAdesione' => 'required|date',
-                'dataFineAdesione' => 'required|date|after_or_equal:dataInizioAdesione',
+                'dataInizioAdesione' => [
+                    'required',
+                    'date',
+                    'before_or_equal:dataFineAdesione',
+                    function ($attribute, $value, $fail) use ($request) {
+                        $evento = \App\Models\Evento::find($request->idEvento);
+                        if ($evento) {
+                            $data = \Carbon\Carbon::parse($value);
+                            $inizioEvento = \Carbon\Carbon::parse($evento->dataInizioEvento);
+                            $fineEvento = \Carbon\Carbon::parse($evento->dataFineEvento);
+
+                            if ($data->lt($inizioEvento) || $data->gt($fineEvento)) {
+                                $fail('La data di inizio adesione deve essere compresa tra la data di inizio e fine dell\'evento: ' . $inizioEvento->format('d/m/Y') . ' e ' . $fineEvento->format('d/m/Y'));
+                            }
+                        }
+                    }
+                ],
+                'dataFineAdesione' => [
+                    'required',
+                    'date',
+                    'after_or_equal:dataInizioAdesione',
+                    function ($attribute, $value, $fail) use ($request) {
+                        $evento = \App\Models\Evento::find($request->idEvento);
+                        if ($evento) {
+                            $data = \Carbon\Carbon::parse($value);
+                            $inizioEvento = \Carbon\Carbon::parse($evento->dataInizioEvento);
+                            $fineEvento = \Carbon\Carbon::parse($evento->dataFineEvento);
+
+                            if ($data->lt($inizioEvento) || $data->gt($fineEvento)) {
+                                $fail('La data di fine adesione deve essere compresa tra la data di inizio e fine dell\'evento: ' . $inizioEvento->format('d/m/Y') . ' e ' . $fineEvento->format('d/m/Y'));
+                            }
+                        }
+                    }
+                ],
                 'autorizzazioneExtraBudget' => 'nullable|string|max:255',
                 'richiestaFattibilitaAgenzia' => 'nullable|string|max:255',
                 'responsabileCuraAllestimento' => 'nullable|string|max:255',
                 'noteAdesione' => 'nullable|string|max:255'
+            ], [
+                'idEvento.required' => 'Il campo evento è obbligatorio.',
+                'idEvento.exists' => 'L\'evento selezionato non esiste.',
+                'idPuntoVendita.required' => 'Il campo punto vendita è obbligatorio.',
+                'idPuntoVendita.max' => 'Il campo punto vendita non può superare 255 caratteri.',
+                'dataInizioAdesione.required' => 'La data di inizio adesione è obbligatoria.',
+                'dataInizioAdesione.date' => 'La data di inizio adesione non è valida.',
+                'dataInizioAdesione.before_or_equal' => 'La data di inizio adesione deve essere uguale o successiva alla data di fine.',
+                'dataFineAdesione.required' => 'La data di fine adesione è obbligatoria.',
+                'dataFineAdesione.date' => 'La data di fine adesione non è valida.',
+                'dataFineAdesione.after_or_equal' => 'La data di fine adesione deve essere uguale o successiva alla data di inizio.',
+                'autorizzazioneExtraBudget.max' => 'Il campo autorizzazione extra budget non può superare 255 caratteri.',
+                'richiestaFattibilitaAgenzia.max' => 'Il campo richiesta fattibilità agenzia non può superare 255 caratteri.',
+                'responsabileCuraAllestimento.max' => 'Il campo responsabile cura allestimento non può superare 255 caratteri.',
+                'noteAdesione.max' => 'Il campo note adesione non può superare 255 caratteri.',
             ]);
 
             $request->merge([
@@ -128,7 +175,7 @@ public function create(Request $request)
             return view('adesioni.edit', compact('adesione', 'eventi', 'puntiVendita'));
         } catch (Exception $e) {
             \Log::error('Errore durante il caricamento del form di modifica: ' . $e->getMessage());
-            return redirect()->route('adesioni.index')->with('error', 'Errore durante il caricamento del form di modifica.');
+            return redirect()->back()->withInput()->withErrors(['error' => 'Errore durante il caricamento del form di modifica: ' . $e->getMessage()]);
         }
     }
 
@@ -146,14 +193,83 @@ public function create(Request $request)
             }
 
             $request->validate([
-                'idEvento' => 'required|exists:eventi,id',
-                'idPuntoVendita' => 'required|max:255',
-                'dataInizioAdesione' => 'required|date',
-                'dataFineAdesione' => 'required|date|after_or_equal:dataInizioAdesione',
-                'autorizzazioneExtraBudget' => 'nullable|string|max:255',
-                'richiestaFattibilitaAgenzia' => 'nullable|string|max:255',
-                'responsabileCuraAllestimento' => 'nullable|string|max:255',
-                'noteAdesione' => 'nullable|string|max:255'
+                'idEvento' => [
+                    'required',
+                    'exists:eventi,id'
+                ],
+                'idPuntoVendita' => [
+                    'required',
+                    'max:255'
+                ],
+                'dataInizioAdesione' => [
+                    'required',
+                    'date',
+                    'before_or_equal:dataFineAdesione',
+                    function ($attribute, $value, $fail) use ($request) {
+                        $evento = \App\Models\Evento::find($request->idEvento);
+                        if ($evento) {
+                            $data = \Carbon\Carbon::parse($value);
+                            $inizioEvento = \Carbon\Carbon::parse($evento->dataInizioEvento);
+                            $fineEvento = \Carbon\Carbon::parse($evento->dataFineEvento);
+
+                            if ($data->lt($inizioEvento) || $data->gt($fineEvento)) {
+                                $fail('La data di inizio adesione deve essere compresa tra la data di inizio e fine dell\'evento: ' . $inizioEvento->format('d/m/Y') . ' e ' . $fineEvento->format('d/m/Y'));
+                            }
+                        }
+                    }
+                ],
+                'dataFineAdesione' => [
+                    'required',
+                    'date',
+                    'after_or_equal:dataInizioAdesione',
+                    function ($attribute, $value, $fail) use ($request) {
+                        $evento = \App\Models\Evento::find($request->idEvento);
+                        if ($evento) {
+                            $data = \Carbon\Carbon::parse($value);
+                            $inizioEvento = \Carbon\Carbon::parse($evento->dataInizioEvento);
+                            $fineEvento = \Carbon\Carbon::parse($evento->dataFineEvento);
+
+                            if ($data->lt($inizioEvento) || $data->gt($fineEvento)) {
+                                $fail('La data di fine adesione deve essere compresa tra la data di inizio e fine dell\'evento: ' . $inizioEvento->format('d/m/Y') . ' e ' . $fineEvento->format('d/m/Y'));
+                            }
+                        }
+                    }
+                ],
+                'autorizzazioneExtraBudget' => [
+                    'nullable',
+                    'string',
+                    'max:255'
+                ],
+                'richiestaFattibilitaAgenzia' => [
+                    'nullable',
+                    'string',
+                    'max:255'
+                ],
+                'responsabileCuraAllestimento' => [
+                    'nullable',
+                    'string',
+                    'max:255'
+                ],
+                'noteAdesione' => [
+                    'nullable',
+                    'string',
+                    'max:255'
+                ]
+            ], [
+                'idEvento.required' => 'Il campo evento è obbligatorio.',
+                'idEvento.exists' => 'L\'evento selezionato non esiste.',
+                'idPuntoVendita.required' => 'Il campo punto vendita è obbligatorio.',
+                'idPuntoVendita.max' => 'Il campo punto vendita non può superare 255 caratteri.',
+                'dataInizioAdesione.required' => 'La data di inizio adesione è obbligatoria.',
+                'dataInizioAdesione.date' => 'La data di inizio adesione non è valida.',
+                'dataInizioAdesione.before_or_equal' => 'La data di inizio adesione deve essere uguale o successiva alla data di fine.',
+                'dataFineAdesione.required' => 'La data di fine adesione è obbligatoria.',
+                'dataFineAdesione.date' => 'La data di fine adesione non è valida.',
+                'dataFineAdesione.after_or_equal' => 'La data di fine adesione deve essere uguale o successiva alla data di inizio.',
+                'autorizzazioneExtraBudget.max' => 'Il campo autorizzazione extra budget non può superare 255 caratteri.',
+                'richiestaFattibilitaAgenzia.max' => 'Il campo richiesta fattibilità agenzia non può superare 255 caratteri.',
+                'responsabileCuraAllestimento.max' => 'Il campo responsabile cura allestimento non può superare 255 caratteri.',
+                'noteAdesione.max' => 'Il campo note adesione non può superare 255 caratteri.',
             ]);
 
             $adesione->update($request->all());
@@ -179,7 +295,7 @@ public function create(Request $request)
             return redirect()->route('adesioni.index')->with('success', 'Adesione eliminata con successo.');
         } catch (Exception $e) {
             \Log::error('Errore durante l\'eliminazione dell\'adesione: ' . $e->getMessage());
-            return redirect()->route('adesioni.index')->with('error', 'Errore durante l\'eliminazione dell\'adesione.');
+            return redirect()->route('adesioni.index')->withInput()->withErrors(['error' => 'Errore durante l\'eliminazione dell\'adesione: ' . $e->getMessage()]);
         }
     }
 }

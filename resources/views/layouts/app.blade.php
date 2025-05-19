@@ -48,7 +48,7 @@
 
 
 </head>
-  <body class="layout-fixed sidebar-expand-lg sidebar-mini sidebar-collapse bg-body-tertiary">
+  <body class="layout-fixed sidebar-expand-lg sidebar sidebar-collapse bg-body-tertiary">
         <!--begin::App Wrapper-->
     <div class="app-wrapper">
       <!--begin::Header-->
@@ -125,7 +125,7 @@
       </nav>
       <!--end::Header-->
       <!--begin::Sidebar-->
-      <aside class="app-sidebar shadow" data-bs-theme="dark" style ="background-color:rgb(37, 84, 89);">
+      <aside class="app-sidebar shadowstify-content-center align-items-center" data-bs-theme="dark" style="background-color:rgb(37, 84, 89); text-align: center !important;">
         <!--begin::Sidebar Brand-->
         <div class="sidebar-brand">
           <!--begin::Brand Link-->

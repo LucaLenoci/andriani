@@ -48,6 +48,11 @@
                 <!-- Stato a sinistra -->
                 <div class="col-12 col-md-3 d-flex flex-column align-items-center justify-content-center">
                     <h4 class="mb-2">ID: {{ $evento->id }}</h4>
+                    @if($evento->statoEvento === 'annullato')
+                        <span class="badge p-3 fs-6" style="min-width: 120px; text-align: center; background-color: #dc3545; color: #fff;">
+                            Annullato
+                        </span>
+                    @endif
                 </div>
 
                 <!-- Info a destra -->
@@ -63,17 +68,17 @@
 
                 <div class="col-12 col-md-2 mt-2 d-flex flex-row flex-md-column align-items-end gap-2">
                     <div class="d-flex flex-row flex-md-column w-100 gap-2">
-                        <a href="{{ route('eventi.show', $evento->id) }}" class="btn btn-success btn-sm w-100">Visualizza</a>
+                        <a href="{{ route('eventi.show', $evento->id) }}" class="btn btn-primary btn-sm w-100">Visualizza</a>
                         
                         @if($evento->statoEvento !== 'annullato')
-                            <a href="{{ route('eventi.edit', $evento->id) }}" class="btn btn-warning btn-sm w-100">Modifica</a>
+                            <a href="{{ route('eventi.edit', $evento->id) }}" class="btn btn-primary btn-sm w-100">Modifica</a>
                         @endif
 
                         @if($evento->statoEvento !== 'attivo' && $evento->statoEvento !== 'annullato')
-                            <form action="{{ route('eventi.destroy', $evento->id) }}" method="POST" class="d-inline w-100" onsubmit="return confirm('Sei sicuro di voler eliminare questo evento?');">
+                            <form action="{{ route('eventi.destroy', $evento->id) }}" method="POST" class="d-inline w-100" onsubmit="return confirm('Sei sicuro di voler annullare questo evento?');">
                                 @csrf
                                 @method('DELETE')
-                                <button class="btn btn-danger btn-sm w-100">Elimina</button>
+                                <button class="btn btn-danger btn-sm w-100">Annulla</button>
                             </form>
                         @endif
                     </div>

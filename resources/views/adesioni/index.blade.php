@@ -69,10 +69,10 @@
 
                 <div class="col-12 col-md-2 mt-2 d-flex flex-row flex-md-column align-items-end gap-2">
                     <div class="d-flex flex-row flex-md-column w-100 gap-2">
-                        <a href="{{ route('adesioni.show', $adesione->id) }}" class="btn btn-success btn-sm w-100">Visualizza</a>
+                        <a href="{{ route('adesioni.show', $adesione->id) }}" class="btn btn-primary btn-sm w-100">Visualizza</a>
                         
                         @if($adesione->statoAdesione !== 'annullata')
-                            <a href="{{ route('adesioni.edit', $adesione->id) }}" class="btn btn-warning btn-sm w-100">Modifica</a>
+                            <a href="{{ route('adesioni.edit', $adesione->id) }}" class="btn btn-primary btn-sm w-100">Modifica</a>
                         @endif
 
                         @if($adesione->statoAdesione !== 'inviata' && $adesione->statoAdesione !== 'annullata')
