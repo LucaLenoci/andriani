@@ -149,6 +149,65 @@
                 </div>
             @endif
 
+            {{-- Sezione RIENTRO DATI associati --}}
+
+            <hr>
+            <h3 class="card-title">Passaggi registrati per l'evento ID {{ $evento->id }}</h3>
+            <div class="mb-5"></div>
+            <br>
+            @if (!empty($datiPassaggi))
+                <div class="row">
+                    @foreach ($datiPassaggi as $passaggiUtente)
+                        @if(count($passaggiUtente) > 0)
+                            @php
+                                $utenteNome = $passaggiUtente[0]['nomeUtente'] ?? 'Utente sconosciuto';
+                                $utenteId = $passaggiUtente[0]['idUtente'] ?? null;
+                                // Raggruppa i passaggi per prodotto
+                                $passaggiPerProdotto = [];
+                                foreach ($passaggiUtente as $passaggio) {
+                                    $prodotto = $passaggio['prodotto'] ?? 'Prodotto non specificato';
+                                    $passaggiPerProdotto[$prodotto][] = $passaggio;
+                                }
+                            @endphp
+                            <div class="col-md-12 mb-4">
+                                <div class="card card-primary shadow-sm">
+                                    <div class="card-header font-weight-bold">
+                                        <i class="fas fa-user mr-2"></i>Utente: {{ $utenteNome }} (ID: {{ $utenteId }})
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            @foreach ($passaggiPerProdotto as $prodotto => $passaggi)
+                                                <div class="col-md-4 mb-3">
+                                                    <div class="card card-success shadow-sm">
+                                                        <div class="card-header text-center font-weight-bold">
+                                                            Prodotto: {{ $prodotto }}<br>
+                                                            @if(count($passaggi) > 0)
+                                                                Passaggio ID: {{ $passaggi[0]['idPassaggio'] }}
+                                                            @endif
+                                                        </div>
+                                                        <div class="card-body">
+                                                            @foreach ($passaggi as $passaggio)
+                                                                <div class="mb-2 border-bottom pb-2">
+                                                                    <div><strong>{{ $passaggio['rd']['nome'] }}:</strong> {{ $passaggio['valore'] }}</div>
+                                                                </div>
+                                                            @endforeach
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+                    @endforeach
+                </div>
+            @else
+                <div class="alert alert-warning mt-4">
+                    Nessun dato trovato per questo evento.
+                </div>
+            @endif
+
         </div>
     </div>
 @endif
