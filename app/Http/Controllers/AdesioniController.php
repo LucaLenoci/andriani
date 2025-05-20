@@ -14,6 +14,7 @@ class AdesioniController extends Controller
         try {
             $query = Adesione::query();
 
+            // Filtro per ricerca testuale
             if ($request->filled('search')) {
                 $search = $request->input('search');
                 $query->where(function ($q) use ($search) {
@@ -25,6 +26,16 @@ class AdesioniController extends Controller
                       ->orWhere('idPuntoVendita', 'like', "%{$search}%")
                       ->orWhere('idUtenteCreatoreAdesione', 'like', "%{$search}%");
                 });
+            }
+
+            // Filtro per statoAdesione
+            if ($request->filled('statoAdesione')) {
+                $stati = $request->input('statoAdesione');
+                if (is_array($stati)) {
+                    $query->whereIn('statoAdesione', $stati);
+                } else {
+                    $query->where('statoAdesione', $stati);
+                }
             }
 
             $adesioni = $query->orderBy('dataInizioAdesione', 'desc')->paginate(20);
@@ -290,7 +301,8 @@ public function create(Request $request)
                 return redirect()->route('adesioni.index')->with('error', 'Non è possibile eliminare un\'adesione inviata o annullata.');
             }
 
-            $adesione->delete();
+            $adesione->statoAdesione = 'annullata';
+            $adesione->save();
 
             return redirect()->route('adesioni.index')->with('success', 'Adesione eliminata con successo.');
         } catch (Exception $e) {

@@ -22,6 +22,11 @@ class EventiController extends Controller
                 });
             }
 
+            if ($request->filled('statoEvento')) {
+                $stato = $request->input('statoEvento');
+                $query->where('statoEvento', $stato);
+            }
+
             $eventi = $query->orderBy('dataInizioEvento', 'desc')->paginate(20);
 
             return view('eventi.index', compact('eventi'));

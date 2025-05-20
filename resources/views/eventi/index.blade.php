@@ -39,6 +39,17 @@
     <div>
         {{ $eventi->withQueryString()->links('pagination::bootstrap-4') }}
     </div>
+
+    <form action="{{ route('eventi.index') }}" method="GET" class="d-flex align-items-center ms-3">
+        <select name="statoEvento" class="form-select" onchange="this.form.submit()">
+            <option value="">Tutti gli stati</option>
+            <option value="creato" {{ request('statoEvento') == 'creato' ? 'selected' : '' }}>Creato</option>
+            <option value="annullato" {{ request('statoEvento') == 'annullato' ? 'selected' : '' }}>Annullato</option>
+        </select>
+        @if(request('search'))
+            <input type="hidden" name="search" value="{{ request('search') }}">
+        @endif
+    </form>
 </div>
 
 @forelse($eventi as $evento)

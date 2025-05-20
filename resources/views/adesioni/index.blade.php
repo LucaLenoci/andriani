@@ -39,6 +39,17 @@
     <div>
         {{ $adesioni->withQueryString()->links('pagination::bootstrap-4') }}
     </div>
+    <form action="{{ route('adesioni.index') }}" method="GET" class="ms-3">
+        <select name="statoAdesione" class="form-select" onchange="this.form.submit()">
+            <option value="">Tutti gli stati</option>
+            <option value="inviata" {{ request('statoAdesione') == 'inviata' ? 'selected' : '' }}>Inviata</option>
+            <option value="annullata" {{ request('statoAdesione') == 'annullata' ? 'selected' : '' }}>Annullata</option>
+            <option value="bozza" {{ request('statoAdesione') == 'bozza' ? 'selected' : '' }}>Bozza</option>
+        </select>
+        @if(request('search'))
+            <input type="hidden" name="search" value="{{ request('search') }}">
+        @endif
+    </form>
 </div>
 
 
