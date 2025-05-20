@@ -19,6 +19,7 @@ Route::middleware('auth')->group(function () {
     Route::get('eventi', [EventiController::class, 'index'])->name('eventi.index');
     Route::resource('eventi', EventiController::class);
     Route::get('/punti-vendita/search', [PuntiVenditaController::class, 'search'])->name('punti-vendita.search');
+    Route::get('/materiali/search', [MaterialiController::class, 'search'])->name('materiali.search');
 });
 
 

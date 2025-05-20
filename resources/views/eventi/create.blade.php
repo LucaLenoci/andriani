@@ -249,6 +249,145 @@
             </script>
 
 
+            <div class="card card-success mb-4">
+                <div class="card-header">
+                    <strong>Materiali</strong>
+                </div>
+
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="materialiSearch">Cerca Materiale</label>
+                        <input type="text" id="materialiSearch" class="form-control mb-2" placeholder="Cerca per nome o codice...">
+
+                        <div id="materialiList" style="max-height: 250px; overflow-y: auto; border: 1px solid #ced4da; border-radius: 4px; padding: 10px;">
+                            @foreach($materiali as $mat)
+                                <div class="form-check">
+                                    <input
+                                        class="form-check-input mat-checkbox d-none"
+                                        type="checkbox"
+                                        name="materiali[]"
+                                        value="{{ $mat->id }}"
+                                        id="mat_{{ $mat->id }}"
+                                        data-label="{{ $mat->nomeMateriale }} ({{ $mat->codiceIdentificativoMateriale }})"
+                                        {{ (collect(old('materiali'))->contains($mat->id)) ? 'checked' : '' }}
+                                    >
+                                    <label class="form-check-label" for="mat_{{ $mat->id }}">
+                                        {{ $mat->nomeMateriale }} ({{ $mat->codiceIdentificativoMateriale }})
+                                    </label>
+                                </div>
+                            @endforeach
+                        </div>
+                        <small class="form-text text-muted">Cerca e seleziona i materiali desiderati.</small>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <label>Materiali Selezionati</label>
+                    <ul id="selectedMateriali" class="list-group"></ul>
+                </div>
+            </div>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    const searchInput = document.getElementById('materialiSearch');
+                    const materialiList = document.getElementById('materialiList');
+                    const selectedList = document.getElementById('selectedMateriali');
+
+                    function addSelectedListItem(cb) {
+                        const label = cb.getAttribute('data-label');
+                        const value = cb.value;
+
+                        for (const li of selectedList.children) {
+                            if (li.dataset.value === value) {
+                                return;
+                            }
+                        }
+
+                        const li = document.createElement('li');
+                        li.className = 'list-group-item d-flex justify-content-between align-items-center';
+                        li.dataset.value = value;
+                        li.textContent = label;
+
+                        const hiddenInput = document.createElement('input');
+                        hiddenInput.type = 'hidden';
+                        hiddenInput.name = 'selectedMateriali[]';
+                        hiddenInput.value = value;
+
+                        li.appendChild(hiddenInput);
+
+                        const removeBtn = document.createElement('button');
+                        removeBtn.type = 'button';
+                        removeBtn.className = 'btn btn-danger btn-sm ml-2';
+                        removeBtn.textContent = 'Rimuovi';
+                        removeBtn.addEventListener('click', function () {
+                            cb.checked = false;
+                            li.remove();
+                        });
+
+                        li.appendChild(removeBtn);
+                        selectedList.appendChild(li);
+                    }
+
+                    function removeSelectedListItem(cb) {
+                        Array.from(selectedList.children).forEach(li => {
+                            if (li.textContent.replace('Rimuovi', '').trim() === cb.getAttribute('data-label')) {
+                                li.remove();
+                            }
+                        });
+                    }
+
+                    function initializeSelectedList() {
+                        selectedList.innerHTML = '';
+                        document.querySelectorAll('.mat-checkbox:checked').forEach(cb => {
+                            addSelectedListItem(cb);
+                        });
+                    }
+
+                    materialiList.addEventListener('change', function (e) {
+                        if (e.target.classList.contains('mat-checkbox')) {
+                            if (e.target.checked) {
+                                addSelectedListItem(e.target);
+                            }
+                        }
+                    });
+
+                    initializeSelectedList();
+
+                    searchInput.addEventListener('input', function () {
+                        const filter = searchInput.value.toLowerCase();
+
+                        fetch(`/materiali/search?term=${encodeURIComponent(filter)}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                const selectedIds = Array.from(document.querySelectorAll('.mat-checkbox:checked')).map(cb => cb.value);
+
+                                materialiList.innerHTML = '';
+
+                                data.forEach(mat => {
+                                    const wrapper = document.createElement('div');
+                                    wrapper.className = 'form-check mat-item';
+
+                                    const id = `mat_${mat.id}`;
+                                    const labelText = `${mat.nomeMateriale} (${mat.codiceIdentificativoMateriale})`;
+
+                                    wrapper.innerHTML = `
+                                        <input class="form-check-input mat-checkbox d-none" type="checkbox"
+                                            name="materiali[]" value="${mat.id}" id="${id}"
+                                            data-label="${labelText}"
+                                            ${selectedIds.includes(mat.id.toString()) ? 'checked' : ''}>
+                                        <label class="form-check-label" for="${id}">${labelText}</label>
+                                    `;
+
+                                    materialiList.appendChild(wrapper);
+                                });
+
+                            });
+                    });
+
+                });
+            </script>
+
+
             <div class="text-right mb-4">
                 <button type="submit" class="btn btn-success">
                     <i class="fas fa-save"></i> Salva

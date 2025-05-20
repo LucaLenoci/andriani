@@ -125,6 +125,30 @@
                 </div>
             @endif
 
+            {{-- Sezione materiali associati --}}
+            <hr>
+            <h3 class="card-title">Materiali Associati</h3>
+            <div class="mb-5"></div>
+            <br>
+            @if($materiali->isEmpty())
+                <p>Nessun materiale associato a questo evento.</p>
+            @else
+                <div class="row">
+                    @foreach($materiali as $materiale)
+                        <div class="col-md-4 mb-3">
+                            <div class="card shadow-sm">
+                                <div class="card-body">
+                                    <p>{{ $materiale->nomeMateriale ?? 'Nome non disponibile' }}</p>
+                                    @if(!empty($materiale->codiceIdentificativoMateriale))
+                                        <span class="text-muted">Codice Identificativo: {{ $materiale->codiceIdentificativoMateriale }}</span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+
         </div>
     </div>
 @endif

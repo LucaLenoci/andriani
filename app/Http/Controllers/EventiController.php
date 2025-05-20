@@ -49,12 +49,21 @@ class EventiController extends Controller
 
             $ids = collect($puntiVenditaSelezionatiIds)->pluck('id')->toArray();
 
-    // Recupera i dati completi dei punti vendita associati
+            // Recupera i dati completi dei punti vendita associati
             $puntiVendita = \DB::table('puntivendita')
                 ->whereIn('id', $puntiVenditaSelezionatiIds)
                 ->get();
 
-            return view('eventi.show', compact('evento', 'puntiVendita'));
+            $materialiSelezionatiIds = \DB::table('eventomateriali')
+                ->where('idEvento', $id)
+                ->pluck('idMateriale')
+                ->toArray();
+
+            $materiali = \DB::table('materiali')
+                ->whereIn('id', $materialiSelezionatiIds)
+                ->get();
+
+            return view('eventi.show', compact('evento', 'puntiVendita', 'materiali'));
         } catch (Exception $e) {
             \Log::error('Errore durante il caricamento dell\'evento: ' . $e->getMessage());
             return redirect()->route('eventi.index')->withInput()->withErrors(['error' => 'Errore durante il caricamento dell\'evento: ' . $e->getMessage()]);
@@ -65,7 +74,8 @@ class EventiController extends Controller
     {
         try {
             $puntiVendita = PuntoVendita::limit(20)->get();
-            return view('eventi.create', ['puntiVendita' => $puntiVendita]);
+            $materiali = \DB::table('materiali')->limit(20)->get();
+            return view('eventi.create', ['puntiVendita' => $puntiVendita], ['materiali' => $materiali]);
         } catch (Exception $e) {
             \Log::error('Errore durante il caricamento del form di creazione: ' . $e->getMessage());
             return redirect()->route('eventi.index')->withInput()->withErrors(['error' => 'Errore durante il caricamento del form di creazione: ' . $e->getMessage()]);
@@ -86,6 +96,8 @@ class EventiController extends Controller
                 'previstaAttivitaDiAllestimento' => ['nullable', 'boolean'],
                 'selectedPuntiVendita' => ['required', 'array', 'min:1'],
                 'selectedPuntiVendita.*' => ['exists:puntivendita,id'],
+                'selectedMateriali' => ['required', 'array', 'min:1'],
+                'selectedMateriali.*' => ['exists:materiali,id'],
             ], [
                 'nomeEvento.required' => 'Il nome dell\'evento è obbligatorio.',
                 'nomeEvento.max' => 'Il nome dell\'evento non può superare 255 caratteri.',
@@ -106,6 +118,9 @@ class EventiController extends Controller
                 'selectedPuntiVendita.array' => 'Il campo punti vendita deve essere un array.',
                 'selectedPuntiVendita.min' => 'Seleziona almeno un punto vendita.',
                 'selectedPuntiVendita.*.exists' => 'Uno o più punti vendita selezionati non sono validi.',
+                'selectedMateriali.required' => 'Seleziona almeno un materiale.',
+                'selectedMateriali.*.exists' => 'Uno o più materiali selezionati non sono validi.',
+                'selectedMateriali.min' => 'Seleziona almeno un materiale.',
             ]);
 
             $request->merge([
@@ -130,6 +145,20 @@ class EventiController extends Controller
                 }
             }
 
+            if ($request->filled('selectedMateriali')) {
+                $materialiIds = $request->input('selectedMateriali');
+                $insertData = [];
+                foreach ($materialiIds as $idMateriale) {
+                    $insertData[] = [
+                        'idEvento' => $evento->id,
+                        'idMateriale' => $idMateriale,
+                    ];
+                }
+                if (!empty($insertData)) {
+                    \DB::table('eventomateriali')->insert($insertData);
+                }
+            }
+
             return redirect()->route('eventi.index')->with('success', 'Evento creato con successo.');
         } catch (Exception $e) {
             \Log::error('Errore durante la creazione dell\'evento: ' . $e->getMessage());
@@ -143,6 +172,7 @@ class EventiController extends Controller
         try {
             $evento = Evento::findOrFail($id);
             $puntiVendita = PuntoVendita::limit(20)->get();
+            $materiali = \DB::table('materiali')->limit(20)->get();
 
             // ID dei punti vendita già associati all'evento tramite tabella pivot eventopuntivendita
             $puntiVenditaSelezionatiIds = \DB::table('eventopuntivendita')
@@ -153,7 +183,18 @@ class EventiController extends Controller
             // Recupera i dati completi dei punti vendita selezionati per mostrare label ecc.
             $puntiVenditaSelezionati = PuntoVendita::whereIn('id', $puntiVenditaSelezionatiIds)->get();
 
-            return view('eventi.edit', compact('evento', 'puntiVendita', 'puntiVenditaSelezionati'));
+            // ID dei materiali già associati all'evento tramite tabella pivot eventomateriali
+            $materialiSelezionatiIds = \DB::table('eventomateriali')
+                ->where('idEvento', $id)
+                ->pluck('idMateriale')
+                ->toArray();
+            
+            // Recupera i dati completi dei materiali selezionati per mostrare label ecc.
+            $materialiSelezionati = \DB::table('materiali')
+                ->whereIn('id', $materialiSelezionatiIds)
+                ->get();
+
+            return view('eventi.edit', compact('evento', 'puntiVendita', 'puntiVenditaSelezionati', 'materiali', 'materialiSelezionati'));
         } catch (Exception $e) {
             \Log::error('Errore durante il caricamento del form di modifica: ' . $e->getMessage());
             return redirect()->back()->withInput()->withErrors(['error' => 'Errore durante il caricamento del form di modifica: ' . $e->getMessage()]);
@@ -176,6 +217,8 @@ class EventiController extends Controller
                 'previstaAttivitaDiAllestimento' => 'required|boolean',
                 'selectedPuntiVendita' => 'required|array|min:1',
                 'selectedPuntiVendita.*' => 'integer|exists:puntivendita,id',
+                'selectedMateriali' => 'required|array|min:1',
+                'selectedMateriali.*' => 'integer|exists:materiali,id',
             ], [
                 'nomeEvento.required' => 'Il nome dell\'evento è obbligatorio.',
                 'nomeEvento.string' => 'Il nome dell\'evento deve essere una stringa.',
@@ -200,6 +243,11 @@ class EventiController extends Controller
                 'selectedPuntiVendita.min' => 'Seleziona almeno un punto vendita.',
                 'selectedPuntiVendita.*.integer' => 'L\'ID del punto vendita deve essere un numero intero.',
                 'selectedPuntiVendita.*.exists' => 'Uno o più punti vendita selezionati non sono validi.',
+                'selectedMateriali.required' => 'Seleziona almeno un materiale.',
+                'selectedMateriali.array' => 'Il campo materiali deve essere un array.',
+                'selectedMateriali.min' => 'Seleziona almeno un materiale.',
+                'selectedMateriali.*.integer' => 'L\'ID del materiale deve essere un numero intero.',
+                'selectedMateriali.*.exists' => 'Uno o più materiali selezionati non sono validi.',
             ]);
 
             // Aggiorna dati evento
@@ -217,6 +265,20 @@ class EventiController extends Controller
                 ];
             }
             \DB::table('eventopuntivendita')->insert($insert);
+            }
+
+            if (!empty($data['selectedMateriali'])) {
+                // Aggiorna pivot eventomateriali: cancella quelli vecchi e inserisci quelli nuovi
+                \DB::table('eventomateriali')->where('idEvento', $evento->id)->delete();
+
+                $insert = [];
+                foreach ($data['selectedMateriali'] as $idMateriale) {
+                    $insert[] = [
+                        'idEvento' => $evento->id,
+                        'idMateriale' => $idMateriale,
+                    ];
+                }
+                \DB::table('eventomateriali')->insert($insert);
             }
 
             return redirect()->route('eventi.index')->with('success', 'Evento aggiornato con successo.');
