@@ -90,7 +90,7 @@
                             <form action="{{ route('adesioni.destroy', $adesione->id) }}" method="POST" class="d-inline w-100" onsubmit="return confirm('Sei sicuro di voler eliminare questa adesione?');">
                                 @csrf
                                 @method('DELETE')
-                                <button class="btn btn-danger btn-sm w-100">Elimina</button>
+                                <button class="btn btn-danger btn-sm w-100">Annulla</button>
                             </form>
                         @endif
                     </div>
