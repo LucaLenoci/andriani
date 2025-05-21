@@ -143,6 +143,40 @@
                     
                 @endforeach
             </div>
+            <div class="row">
+                <div class="col-12">
+                    <h4 class="mt-4 mb-3"><i class="fas fa-boxes mr-2"></i> Materiali Associati</h4>
+                    <div class="row">
+                        @if($materiali->isNotEmpty())
+                            @foreach($materiali as $materiale)
+                                <div class="col-md-4 mb-3">
+                                    <div class="card border-success shadow h-100">
+                                        <div class="card-header bg-secondary text-white py-2">
+                                            <strong>{{ $materiale->nomeMateriale ?? '-' }}</strong>
+                                        </div>
+                                        <div class="card-body">
+                                            <p class="mb-2">
+                                                <span class="text-muted"><i class="fas fa-barcode mr-1"></i> Codice Identificativo:</span>
+                                                <span class="font-weight-bold">{{ $materiale->codiceIdentificativoMateriale ?? '-' }}</span>
+                                            </p>
+                                            <p class="mb-0">
+                                                <span class="text-muted"><i class="fas fa-cubes mr-1"></i> Quantità Richiesta:</span>
+                                                <span class="font-weight-bold">{{ $materiale->quantitaRichiesta ?? '-' }}</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        @else
+                            <div class="col-12">
+                                <div class="alert alert-info m-3 mb-0">
+                                    Nessun materiale associato a questa adesione.
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="card-footer text-right" >
             <a href="{{ route('adesioni.index') }}" class="btn btn-success">

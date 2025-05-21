@@ -141,6 +141,50 @@
         </div>
     </div>
 
+    {{-- SEZIONE 4: MATERIALE --}}
+    <div class="card card-success mb-4">
+        <div class="card-header">
+            <strong>Materiale Adesione</strong>
+        </div>
+        <div class="card-body">
+            @if(isset($materiali) && count($materiali) > 0)
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Materiale</th>
+                                <th>Codice Identificativo</th>
+                                <th>Quantità</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($materiali as $index => $materiale)
+                                <tr>
+                                    <td>{{ $materiale->nomeMateriale ?? 'Materiale #' . $materiale->idMateriale }}</td>
+                                    <td>{{ $materiale->codiceIdentificativoMateriale ?? '-' }}</td>
+                                    <td>
+                                        <input 
+                                            type="number" 
+                                            name="materiali[{{ $materiale->idMateriale }}][quantitaRichiesta]" 
+                                            value="{{ old('materiali.' . $materiale->idMateriale . '.quantitaRichiesta', $materiale->quantitaRichiesta) }}" 
+                                            min="0" 
+                                            max="9999"
+                                            class="form-control" 
+                                            style="width: 100px;"
+                                        >
+                                        <input type="hidden" name="materiali[{{ $materiale->idMateriale }}][idMateriale]" value="{{ $materiale->idMateriale }}">
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @else
+                <p>Nessun materiale associato all'evento selezionato.</p>
+            @endif
+        </div>
+    </div>
+
     {{-- PULSANTI --}}
     <div class="text-right mb-4">
         <button type="submit" class="btn btn-success">

@@ -51,7 +51,15 @@ class AdesioniController extends Controller
     {
         try {
             $adesione = Adesione::findOrFail($id);
-            return view('adesioni.show', compact('adesione'));
+
+            // Carico i materiali associati all'adesione
+            $materiali = \DB::table('adesionemateriali')
+                ->join('materiali', 'adesionemateriali.idMateriale', '=', 'materiali.id')
+                ->select('materiali.*', 'adesionemateriali.*')
+                ->where('adesionemateriali.idAdesione', $adesione->id)
+                ->get();
+
+            return view('adesioni.show', compact('adesione', 'materiali'));
         } catch (Exception $e) {
             \Log::error('Errore durante il caricamento dell\'adesione: ' . $e->getMessage());
             return redirect()->route('adesioni.index')->withInput()->withErrors(['error' => 'Errore durante il caricamento dell\'adesione: ' . $e->getMessage()]);
@@ -63,6 +71,7 @@ public function create(Request $request)
     try {
         $eventi = Evento::all();
         $puntiVendita = collect(); // Vuoto di default
+        $materiali = collect(); // Vuoto di default
 
         if ($request->has('idEvento') && !empty($request->idEvento)) {
             $eventoId = $request->idEvento;
@@ -71,9 +80,15 @@ public function create(Request $request)
                 ->select('puntivendita.*')
                 ->where('eventopuntivendita.idEvento', $eventoId)
                 ->get();
+
+            $materiali = \DB::table('eventomateriali')
+                ->join('materiali', 'eventomateriali.idMateriale', '=', 'materiali.id')
+                ->select('materiali.*')
+                ->where('eventomateriali.idEvento', $eventoId)
+                ->get();
         }
 
-        return view('adesioni.create', compact('eventi', 'puntiVendita'));
+        return view('adesioni.create', compact('eventi', 'puntiVendita', 'materiali'));
 
     } catch (Exception $e) {
         \Log::error('Errore durante il caricamento del form di creazione: ' . $e->getMessage());
@@ -124,7 +139,10 @@ public function create(Request $request)
                 'autorizzazioneExtraBudget' => 'nullable|string|max:255',
                 'richiestaFattibilitaAgenzia' => 'nullable|string|max:255',
                 'responsabileCuraAllestimento' => 'nullable|string|max:255',
-                'noteAdesione' => 'nullable|string|max:255'
+                'noteAdesione' => 'nullable|string|max:255',
+                'materiali' => 'nullable|array',
+                'materiali.*.id' => 'required|exists:materiali,id',
+                'materiali.*.quantita' => 'required|integer|min:0'
             ], [
                 'idEvento.required' => 'Il campo evento è obbligatorio.',
                 'idEvento.exists' => 'L\'evento selezionato non esiste.',
@@ -140,6 +158,12 @@ public function create(Request $request)
                 'richiestaFattibilitaAgenzia.max' => 'Il campo richiesta fattibilità agenzia non può superare 255 caratteri.',
                 'responsabileCuraAllestimento.max' => 'Il campo responsabile cura allestimento non può superare 255 caratteri.',
                 'noteAdesione.max' => 'Il campo note adesione non può superare 255 caratteri.',
+                'materiali.array' => 'I materiali devono essere un array.',
+                'materiali.*.id.required' => 'Il campo ID materiale è obbligatorio.',
+                'materiali.*.id.exists' => 'Il materiale selezionato non esiste.',
+                'materiali.*.quantita.integer' => 'La quantità deve essere un numero intero.',
+                'materiali.*.quantita.required' => 'La quantità è obbligatoria.',
+                'materiali.*.quantita.min' => 'La quantità non può essere negativa.',
             ]);
 
             $request->merge([
@@ -150,6 +174,17 @@ public function create(Request $request)
 
             Adesione::create($request->all());
 
+            // Associa i materiali all'adesione
+            if ($request->has('materiali')) {
+                foreach ($request->materiali as $materiale) {
+                    \DB::table('adesionemateriali')->insert([
+                        'idAdesione' => Adesione::latest('id')->first()->id,
+                        'idMateriale' => $materiale['id'],
+                        'quantitaRichiesta' => $materiale['quantita'] ?? 0, // Default a 1 se non specificato
+                    ]);
+                }
+            }            
+
             return redirect()->route('adesioni.index')->with('success', 'Adesione creata con successo.');
         } catch (Exception $e) {
             \Log::error('Errore durante la creazione dell\'adesione: ' . $e->getMessage());
@@ -157,7 +192,8 @@ public function create(Request $request)
         }
     }
 
-    public function edit(Request $request, $id)    {
+    public function edit(Request $request, $id)
+    {
         try {
             $adesione = Adesione::findOrFail($id);
 
@@ -165,25 +201,25 @@ public function create(Request $request)
                 return redirect()->route('adesioni.index')->with('error', 'Non è possibile modificare un\'adesione annullata.');
             }
 
-            $eventi = Evento::all();
-            $puntiVendita = collect(); // Vuoto di default
+            // L'evento NON è modificabile: carico solo quello dell'adesione
+            $evento = Evento::find($adesione->idEvento);
+            $eventi = collect([$evento]); // Solo l'evento associato
 
-            if ($request->has('idEvento') && !empty($request->idEvento)) {
-                $eventoId = $request->idEvento;
-                $puntiVendita = \DB::table('eventopuntivendita')
-                    ->join('puntivendita', 'eventopuntivendita.idPuntoVendita', '=', 'puntivendita.id')
-                    ->select('puntivendita.*')
-                    ->where('eventopuntivendita.idEvento', $eventoId)
-                    ->get();
-            }else{
-                $puntiVendita = \DB::table('eventopuntivendita')
-                    ->join('puntivendita', 'eventopuntivendita.idPuntoVendita', '=', 'puntivendita.id')
-                    ->select('puntivendita.*')
-                    ->where('eventopuntivendita.idEvento', $adesione->idEvento)
-                    ->get();
-            }
+            // Carico i punti vendita relativi all'evento dell'adesione
+            $puntiVendita = \DB::table('eventopuntivendita')
+                ->join('puntivendita', 'eventopuntivendita.idPuntoVendita', '=', 'puntivendita.id')
+                ->select('puntivendita.*')
+                ->where('eventopuntivendita.idEvento', $adesione->idEvento)
+                ->get();
 
-            return view('adesioni.edit', compact('adesione', 'eventi', 'puntiVendita'));
+            // Carico i materiali associati all'adesione
+            $materiali = \DB::table('adesionemateriali')
+                ->join('materiali', 'adesionemateriali.idMateriale', '=', 'materiali.id')
+                ->select('materiali.*', 'adesionemateriali.*')
+                ->where('adesionemateriali.idAdesione', $adesione->id)
+                ->get();
+
+            return view('adesioni.edit', compact('adesione', 'eventi', 'puntiVendita', 'materiali'));
         } catch (Exception $e) {
             \Log::error('Errore durante il caricamento del form di modifica: ' . $e->getMessage());
             return redirect()->back()->withInput()->withErrors(['error' => 'Errore durante il caricamento del form di modifica: ' . $e->getMessage()]);
@@ -266,6 +302,20 @@ public function create(Request $request)
                     'string',
                     'max:255'
                 ]
+                ,
+                'materiali' => [
+                    'nullable',
+                    'array'
+                ],
+                'materiali.*.idMateriale' => [
+                    'required',
+                    'exists:materiali,id'
+                ],
+                'materiali.*.quantitaRichiesta' => [
+                    'required',
+                    'integer',
+                    'min:0'
+                ]
             ], [
                 'idEvento.required' => 'Il campo evento è obbligatorio.',
                 'idEvento.exists' => 'L\'evento selezionato non esiste.',
@@ -281,14 +331,35 @@ public function create(Request $request)
                 'richiestaFattibilitaAgenzia.max' => 'Il campo richiesta fattibilità agenzia non può superare 255 caratteri.',
                 'responsabileCuraAllestimento.max' => 'Il campo responsabile cura allestimento non può superare 255 caratteri.',
                 'noteAdesione.max' => 'Il campo note adesione non può superare 255 caratteri.',
+                'materiali.array' => 'I materiali devono essere un array.',
+                'materiali.*.idMateriale.required' => 'Il campo ID materiale è obbligatorio.',
+                'materiali.*.idMateriale.exists' => 'Il materiale selezionato non esiste.',
+                'materiali.*.quantitaRichiesta.integer' => 'La quantità deve essere un numero intero.',
+                'materiali.*.quantitaRichiesta.required' => 'La quantità è obbligatoria.',
+                'materiali.*.quantitaRichiesta.min' => 'La quantità non può essere negativa.',
             ]);
 
             $adesione->update($request->all());
 
+            // Aggiorna i materiali associati all'adesione
+            if ($request->has('materiali')) {
+                foreach ($request->materiali as $materiale) {
+                    \DB::table('adesionemateriali')->updateOrInsert(
+                        [
+                            'idAdesione' => $adesione->id,
+                            'idMateriale' => $materiale['idMateriale']
+                        ],
+                        [
+                            'quantitaRichiesta' => $materiale['quantitaRichiesta'] ?? 0 // Default a 1 se non specificato
+                        ]
+                    );
+                }
+            }
+
             return redirect()->route('adesioni.index')->with('success', 'Adesione aggiornata con successo.');
         } catch (Exception $e) {
             \Log::error('Errore durante l\'aggiornamento dell\'adesione: ' . $e->getMessage());
-            return redirect()->back()->withInput()->with('error', 'Errore durante l\'aggiornamento dell\'adesione.');
+            return redirect()->back()->withInput()->with('error', 'Errore durante l\'aggiornamento dell\'adesione.' . $e->getMessage());
         }
     }
 

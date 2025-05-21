@@ -137,6 +137,145 @@
                 </div>
             </div>
 
+            {{-- SEZIONE 4: MATERIALE --}}
+            <div class="card card-success mb-4">
+            <div class="card-header">
+                <strong>Materiale Adesione</strong>
+            </div>
+            <div class="card-body">
+                @if(isset($materiali) && count($materiali) > 0)
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Materiale</th>
+                                    <th>Quantità Disponibile</th>
+                                    <th>Quantità per Adesione</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($materiali as $materiale)
+                                    <tr>
+                                        <td>{{ $materiale->nomeMateriale ?? 'Materiale #' . $materiale->id }}</td>
+                                        <td>{{ $materiale->codiceIdentificativoMateriale ?? '-' }}</td>
+                                        <td>
+                                            <input
+                                                type="number"
+                                                name="materiali[{{ $materiale->id }}][quantita]"
+                                                class="form-control"
+                                                min="0"
+                                                max="9999"
+                                                value="{{ old('materiali.' . $materiale->id . '.quantita', 0) }}"
+                                            >
+                                            <input type="hidden" name="materiali[{{ $materiale->id }}][id]" value="{{ $materiale->id }}">
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @else
+                    <p>Nessun materiale associato all'evento selezionato.</p>
+                @endif
+            </div>
+            </div>
+
+
+            {{-- SEZIONE 5: GIORNATE --}}
+            <div class="card card-success mb-4">
+                <div class="card-header">
+                    <strong>Giornate</strong>
+                </div>
+                <div class="card-body">
+                    <div id="giornate-container">
+                        @php
+                            $giornateOld = old('giornate', isset($giornate) && count($giornate) > 0 ? $giornate->toArray() : []);
+                        @endphp
+                        @if(count($giornateOld) > 0)
+                            @foreach($giornateOld as $idx => $giornata)
+                                <div class="giornata-row row align-items-end mb-2">
+                                    <div class="col-md-4">
+                                        <label>Data</label>
+                                        <input type="date" name="giornate[{{ $idx }}][data]" class="form-control" value="{{ $giornata['data'] ?? '' }}" required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>Orario Inizio</label>
+                                        <input type="time" name="giornate[{{ $idx }}][orarioInizio]" class="form-control" value="{{ $giornata['orarioInizio'] ?? '' }}" required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>Orario Fine</label>
+                                        <input type="time" name="giornate[{{ $idx }}][orarioFine]" class="form-control" value="{{ $giornata['orarioFine'] ?? '' }}" required>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button" class="btn btn-danger btn-remove-giornata" onclick="removeGiornataRow(this)">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            @endforeach
+                        @else
+                            <div class="giornata-row row align-items-end mb-2">
+                                <div class="col-md-4">
+                                    <label>Data</label>
+                                    <input type="date" name="giornate[0][data]" class="form-control" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label>Orario Inizio</label>
+                                    <input type="time" name="giornate[0][orarioInizio]" class="form-control" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label>Orario Fine</label>
+                                    <input type="time" name="giornate[0][orarioFine]" class="form-control" required>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn-danger btn-remove-giornata" onclick="removeGiornataRow(this)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+                    <button type="button" class="btn btn-primary mt-2" id="add-giornata-btn">
+                        <i class="fas fa-plus"></i> Aggiungi Giornata
+                    </button>
+                </div>
+
+                <script>
+                    let giornataIndex = {{ count($giornateOld) > 0 ? count($giornateOld) : 1 }};
+                    document.getElementById('add-giornata-btn').addEventListener('click', function() {
+                        const container = document.getElementById('giornate-container');
+                        const row = document.createElement('div');
+                        row.className = 'giornata-row row align-items-end mb-2';
+                        row.innerHTML = `
+                            <div class="col-md-4">
+                                <label>Data</label>
+                                <input type="date" name="giornate[${giornataIndex}][data]" class="form-control" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label>Orario Inizio</label>
+                                <input type="time" name="giornate[${giornataIndex}][orarioInizio]" class="form-control" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label>Orario Fine</label>
+                                <input type="time" name="giornate[${giornataIndex}][orarioFine]" class="form-control" required>
+                            </div>
+                            <div class="col-md-2">
+                                <button type="button" class="btn btn-danger btn-remove-giornata" onclick="removeGiornataRow(this)">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        `;
+                        container.appendChild(row);
+                        giornataIndex++;
+                    });
+
+                    function removeGiornataRow(btn) {
+                        const row = btn.closest('.giornata-row');
+                        row.parentNode.removeChild(row);
+                    }
+                </script>
+            </div>
+
             {{-- PULSANTI --}}
             <div class="text-right mb-4">
                 <button type="submit" class="btn btn-success">
