@@ -262,6 +262,8 @@
 
 <!-- AdminLTE -->
 <script src="{{ asset('adminlte/dist/js/adminlte.js') }}"></script>
+
+@stack('scripts')
     
 </body>
 </html>

@@ -15,10 +15,9 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('idAdesione')->nullable();
             $table->string('esigenzaGiornata')->nullable();
-            $table->date('dataInizioGiornata')->nullable();
-            $table->date('dataFineGiornata')->nullable();
-            $table->time('oraInizioGiornata')->nullable();
-            $table->time('oraFineGiornata')->nullable();
+            $table->date('dataGiornata')->nullable();
+            $table->time('orarioInizioGiornata')->nullable();
+            $table->time('orarioFineGiornata')->nullable();
             $table->integer('minutiTotaliGiornata')->nullable();
             $table->integer('numeroRisorseRichieste')->nullable();
             $table->string('idUtenteCreatoreGiornata')->nullable();
