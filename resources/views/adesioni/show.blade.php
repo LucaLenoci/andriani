@@ -151,7 +151,7 @@
                             @foreach($materiali as $materiale)
                                 <div class="col-md-4 mb-3">
                                     <div class="card border-success shadow h-100">
-                                        <div class="card-header bg-secondary text-white py-2">
+                                        <div class="card-header bg-success text-white py-2">
                                             <strong>{{ $materiale->nomeMateriale ?? '-' }}</strong>
                                         </div>
                                         <div class="card-body">
@@ -175,6 +175,57 @@
                             </div>
                         @endif
                     </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <h4 class="mt-4 mb-3"><i class="fas fa-calendar-day mr-2"></i> Giornate Previste</h4>
+                    @if(isset($giornate) && $giornate->isNotEmpty())
+                        @php
+                            $giornatePerEsigenza = $giornate->groupBy('esigenzaGiornata');
+                        @endphp
+                        @foreach($giornatePerEsigenza as $esigenza => $giornateGruppo)
+                            <div class="mb-3">
+                                <h5 class="mb-3">
+                                    <i class="fas fa-tag mr-1"></i>
+                                    {{ "Giornate " . ucfirst($esigenza) }}
+                                </h5>
+                                <div class="row">
+                                    @foreach($giornateGruppo->sortBy('dataGiornata') as $giornata)
+                                        <div class="col-md-3 mb-3">
+                                            <div class="card border-info shadow h-100">
+                                                <div class="card-header bg-success text-white py-2">
+                                                    <strong>{{ \Carbon\Carbon::parse($giornata->dataGiornata)->format('d/m/Y') }}</strong>
+                                                </div>
+                                                <div class="card-body">
+                                                    <p class="mb-1">
+                                                        <span class="text-muted"><i class="fas fa-clock mr-1"></i> Orario:</span>
+                                                        <span class="font-weight-bold">
+                                                            {{ $giornata->orarioInizioGiornata ? \Carbon\Carbon::parse($giornata->orarioInizioGiornata)->format('H:i') : '-' }}
+                                                            -
+                                                            {{ $giornata->orarioFineGiornata ? \Carbon\Carbon::parse($giornata->orarioFineGiornata)->format('H:i') : '-' }}
+                                                        </span>
+                                                        <br>
+                                                        <span class="text-muted"><i class="fas fa-users mr-1"></i> Numero Risorse Richieste:</span>
+                                                        <span class="font-weight-bold">{{ $giornata->numeroRisorseRichieste ?? '-' }}</span>
+                                                        <br>
+                                                        <span class="text-muted"><i class="fas fa-stopwatch mr-1"></i> Minuti totali Attività:</span>
+                                                        <span class="font-weight-bold">{{ $giornata->minutiTotaliGiornata . " minuti" ?? '-' }}</span>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endforeach
+                    @else
+                        <div class="col-12">
+                            <div class="alert alert-info m-3 mb-0">
+                                Nessuna giornata associata a questa adesione.
+                            </div>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

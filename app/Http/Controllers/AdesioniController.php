@@ -59,7 +59,12 @@ class AdesioniController extends Controller
                 ->where('adesionemateriali.idAdesione', $adesione->id)
                 ->get();
 
-            return view('adesioni.show', compact('adesione', 'materiali'));
+            // Carico le giornate associate all'adesione
+            $giornate = \DB::table('giornate')
+                ->where('idAdesione', $adesione->id)
+                ->get();
+
+            return view('adesioni.show', compact('adesione', 'materiali', 'giornate'));
         } catch (Exception $e) {
             \Log::error('Errore durante il caricamento dell\'adesione: ' . $e->getMessage());
             return redirect()->route('adesioni.index')->withInput()->withErrors(['error' => 'Errore durante il caricamento dell\'adesione: ' . $e->getMessage()]);
