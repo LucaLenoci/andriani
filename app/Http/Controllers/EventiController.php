@@ -100,7 +100,7 @@ class EventiController extends Controller
             $request->validate([
                 'nomeEvento' => ['required', 'max:255'],
                 'annoEvento' => ['required', 'integer', 'min:' . date('Y'), 'max:2100'],
-                'dataInizioEvento' => ['required', 'date', 'after_or_equal:dataFineEvento'],
+                'dataInizioEvento' => ['required', 'date', 'before_or_equal:dataFineEvento'],
                 'dataFineEvento' => ['required', 'date', 'after_or_equal:dataInizioEvento'],
                 'richiestaPresenzaPromoter' => ['nullable', 'boolean'],
                 'previstaAttivitaDiCaricamento' => ['nullable', 'boolean'],
@@ -118,7 +118,7 @@ class EventiController extends Controller
                 'annoEvento.max' => 'L\'anno dell\'evento non può superare il 2100.',
                 'dataInizioEvento.required' => 'La data di inizio evento è obbligatoria.',
                 'dataInizioEvento.date' => 'La data di inizio evento deve essere una data valida.',
-                'dataInizioEvento.after_or_equal' => 'La data di inizio evento deve essere uguale o successiva alla data di fine.',
+                'dataInizioEvento.before_or_equal' => 'La data di inizio evento deve essere uguale o successiva alla data di fine.',
                 'dataFineEvento.required' => 'La data di fine evento è obbligatoria.',
                 'dataFineEvento.date' => 'La data di fine evento deve essere una data valida.',
                 'dataFineEvento.after_or_equal' => 'La data di fine evento deve essere uguale o successiva alla data di inizio.',

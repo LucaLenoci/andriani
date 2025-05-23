@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AdesioniController;
 use App\Http\Controllers\EventiController;
 use App\Http\Controllers\PuntiVenditaController;
+use App\Http\Controllers\Api\DatiPerMop;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -20,6 +21,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('eventi', EventiController::class);
     Route::get('/punti-vendita/search', [PuntiVenditaController::class, 'search'])->name('punti-vendita.search');
     Route::get('/materiali/search', [MaterialiController::class, 'search'])->name('materiali.search');
+    Route::get('/dati-per-mop', [DatiPerMop::class, 'adesioni'])->name('dati-per-mop.adesioni');
 });
 
 
