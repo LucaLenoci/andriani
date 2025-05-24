@@ -94,7 +94,11 @@
                         <div class="card shadow-sm">
                             <div class="card-body">
                                 <h6 class="card-subtitle mb-2 text-muted">{{ $label }}</h6>
-                                <p class="card-text">{{ $formattedValue }}</p>
+                                @if($formattedValue === null || $formattedValue === '')
+                                    <p class="card-text text-muted">-</p>
+                                @else
+                                    <p class="card-text">{{ $formattedValue }}</p>
+                                @endif
                             </div>
                         </div>
                     </div>

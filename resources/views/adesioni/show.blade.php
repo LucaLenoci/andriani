@@ -73,7 +73,7 @@
                         $fieldNames = [
                             'id' => 'ID Adesione',
                             'idEvento' => 'ID e Nome Evento',
-                            'idPuntoVendita' => 'ID Punto Vendita',
+                            'idPuntoVendita' => 'Codice e Nome Punto Vendita',
                             'dataInizioAdesione' => 'Data Inizio',
                             'dataFineAdesione' => 'Data Fine',
                             'autorizzazioneExtraBudget' => 'Autorizzazione Extra Budget',
@@ -124,7 +124,9 @@
                             <div class="card shadow-sm">
                                 <div class="card-body">
                                     <h6 class="card-subtitle mb-2 text-muted">{{ $label }}</h6>
-                                    <p class="card-text">{{ $formattedValue }}</p>
+                                    <p class="card-text">
+                                        {{ $formattedValue !== null && $formattedValue !== '' ? $formattedValue : '-' }}
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -135,7 +137,7 @@
                                 <div class="card shadow-sm">
                                     <div class="card-body">
                                         <h6 class="card-subtitle mb-2 text-muted">{{ $label }}</h6>
-                                        <p class="card-text">{{ $formattedValue }}</p>
+                                        <p class="card-text">{{ $formattedValue !== null && $formattedValue !== '' ? $formattedValue : '-' }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -193,7 +195,7 @@
                                 <div class="row">
                                     @foreach($giornateGruppo->sortBy('dataGiornata') as $giornata)
                                         <div class="col-md-3 mb-3">
-                                            <div class="card border-info shadow h-100">
+                                            <div class="card border-success shadow h-100">
                                                 <div class="card-header bg-success text-white py-2">
                                                     <strong>{{ \Carbon\Carbon::parse($giornata->dataGiornata)->format('d/m/Y') }}</strong>
                                                 </div>

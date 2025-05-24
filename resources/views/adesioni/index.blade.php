@@ -87,7 +87,7 @@
                         @endif
 
                         @if($adesione->statoAdesione !== 'inviata' && $adesione->statoAdesione !== 'annullata')
-                            <form action="{{ route('adesioni.destroy', $adesione->id) }}" method="POST" class="d-inline w-100" onsubmit="return confirm('Sei sicuro di voler eliminare questa adesione?');">
+                            <form action="{{ route('adesioni.destroy', $adesione->id) }}" method="POST" class="d-inline w-100" onsubmit="return confirm('Sei sicuro di voler annullare questa adesione?');">
                                 @csrf
                                 @method('DELETE')
                                 <button class="btn btn-danger btn-sm w-100">Annulla</button>
