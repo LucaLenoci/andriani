@@ -64,7 +64,11 @@ class EventiController extends Controller
                 ->whereIn('id', $materialiSelezionatiIds)
                 ->get();
 
-            $url = "https://field.promomedia.dev/api/apiTest.php?table=valori_rd_evento&idEvento=" . $evento->id;
+            //$url = "https://field.promomedia.dev/api/apiTest.php?table=valori_rd_evento&idEvento=" . $evento->id;
+            
+            // Hardcoded URL
+            $url = "https://field.promomedia.dev/api/apiTest.php?table=valori_rd_evento&idEvento=558";
+
 
             $response = Http::withoutVerifying()->get($url);
 
