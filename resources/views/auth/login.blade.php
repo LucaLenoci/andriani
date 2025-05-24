@@ -52,16 +52,15 @@
         </div>
 
         <!-- Login & Forgot Password -->
-        <div class="d-flex justify-content-end align-items-center">
-            @if (Route::has('password.request'))
-                <a class="me-3 text-decoration-underline text-muted small" href="{{ route('password.request') }}">
-                    {{ __('Password dimenticata?') }}
-                </a>
-            @endif
-
-            <button type="submit" class="btn btn-primary">
-                {{ __('Log in') }}
-            </button>
-        </div>
+		<div class="d-flex flex-column align-items-center">
+			<button type="submit" class="btn btn-primary mb-2">
+				{{ __('Log in') }}
+			</button>
+			@if (Route::has('password.request'))
+				<a class="text-decoration-underline text-muted small" href="{{ route('password.request') }}">
+					{{ __('Password dimenticata?') }}
+				</a>
+			@endif
+		</div>
     </form>
 </x-guest-layout>
