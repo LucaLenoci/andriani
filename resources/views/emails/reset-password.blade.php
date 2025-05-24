@@ -40,7 +40,7 @@
 </head>
 <body>
     <div class="container">
-        <img class="logo" src="{{ asset('adminlte/dist/assets/img/favicon-150x150.webp') }}" alt="Logo Azienda" height="60">
+        <img class="logo" src="{{ asset('adminlte/dist/assets/img/logo-andriani.png') }}" alt="Logo Azienda" height="60">
 
         <h2>Ciao {{ $user->name ?? 'Utente' }},</h2>
 
