@@ -22,7 +22,7 @@
             position: relative;
             overflow: hidden;
             font-family: 'Figtree', sans-serif;
-            background-color: #d0e8d8; /* sfondo verde chiaro */
+            background-color: #004750; /* sfondo verde andriani */
             color: #1a202c;
         }
 
@@ -50,11 +50,11 @@
         .bubble {
             position: absolute;
             bottom: -100px;
-            background: rgba(37, 144, 89, 0.5); /* verde più intenso */
+            background: #71A850; /* verde più intenso */
             border-radius: 50%;
             animation-timing-function: linear;
             animation-iteration-count: infinite;
-            filter: drop-shadow(0 0 5px rgba(37, 144, 89, 0.7));
+            filter: drop-shadow(0 0 5px #71A850);
         }
 
         /* Different bubble sizes and animation durations */
@@ -62,21 +62,21 @@
             width: 20px;
             height: 20px;
             animation-name: rise1;
-            animation-duration: 15s;
+            animation-duration: 10s;
         }
 
         .bubble.medium {
             width: 35px;
             height: 35px;
             animation-name: rise2;
-            animation-duration: 25s;
+            animation-duration: 20s;
         }
 
         .bubble.large {
             width: 50px;
             height: 50px;
             animation-name: rise3;
-            animation-duration: 35s;
+            animation-duration: 30s;
         }
 
         @keyframes rise1 {
@@ -132,7 +132,7 @@
     text-align: center;
     font-style: italic;
     font-weight: 700;
-    color: #255459;
+    color: white;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
     z-index: 1;
 
