@@ -69,13 +69,13 @@
             <!--begin::User Menu Dropdown-->
             <li class="nav-item dropdown user-menu">
               <!-- Authentication -->
-              <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+              <a href="#" class="nav-link dropdown-toggle d-flex align-items-center justify-content-md-start justify-content-center text-center w-100" data-bs-toggle="dropdown">
                 <img
                   src="{{ asset('adminlte/dist/assets/img/favicon-150x150.webp') }}"
-                  class="user-image rounded-circle shadow"
+                  class="user-image rounded-circle shadow me-2"
                   alt="User Image"
                 />
-                <span class="d-none d-md-inline">{{ Auth::user()->name }}</span>
+                <span class="d d-md-inline">{{ Auth::user()->name }}</span>
               </a>
               
               <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">

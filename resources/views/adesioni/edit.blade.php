@@ -225,7 +225,7 @@
                     <label for="nuovaDataGiornata_{{ $tipo['chiave'] }}">Data</label>
                     <input type="date" id="nuovaDataGiornata_{{ $tipo['chiave'] }}" class="form-control" placeholder="Data">
                 </div>
-                <div class="form-group col-md-4 mb-2 mb-md-0 d-flex align-items-end">
+                <div class="form-group col-md-4 mb-2 mb-md-0 d-flex align-items-end gap-3">
                     <div class="w-50 pr-1">
                         <label for="nuovoOrarioInizio_{{ $tipo['chiave'] }}">Orario Inizio</label>
                         <input type="time" id="nuovoOrarioInizio_{{ $tipo['chiave'] }}" class="form-control" placeholder="Orario Inizio">
