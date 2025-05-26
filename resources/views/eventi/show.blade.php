@@ -120,7 +120,7 @@
                                 <div class="card-header bg-success text-white d-flex align-items-center">
                                     <i class="fas fa-store mr-2"></i>
                                     <span>
-                                        {{ $punto->ragioneSocialePuntoVendita ?? 'Nome non disponibile' }}
+                                        {{ ' ' . $punto->ragioneSocialePuntoVendita ?? 'Nome non disponibile' }}
                                     </span>
                                 </div>
                                 <div class="card-body">
@@ -131,11 +131,44 @@
                                             {{ $punto->codicePuntoVendita ?? '-' }}
                                         </span>
                                     </p>
-                                    @if(!empty($punto->indirizzoPuntoVendita))
+                                    @if(
+                                        !empty($punto->indirizzoPuntoVendita) ||
+                                        !empty($punto->capPuntoVendita) ||
+                                        !empty($punto->cittaPuntoVendita) ||
+                                        !empty($punto->provinciaPuntoVendita) ||
+                                        !empty($punto->idRegionePuntoVendita)
+                                    )
                                         <p class="mb-0">
                                             <i class="fas fa-map-marker-alt mr-1 text-secondary"></i>
                                             <span class="text-muted">Indirizzo:</span>
-                                            <span>{{ $punto->indirizzoPuntoVendita }}</span>
+                                            <span>
+                                                @if(!empty($punto->indirizzoPuntoVendita))
+                                                    <i class="fas fa-road mr-1 text-secondary"></i>
+                                                    {{ $punto->indirizzoPuntoVendita }}
+                                                @endif
+                                                @if(!empty($punto->capPuntoVendita) || !empty($punto->cittaPuntoVendita) || !empty($punto->provinciaPuntoVendita))
+                                                    <br>
+                                                    @if(!empty($punto->capPuntoVendita))
+                                                        <i class="fas fa-mail-bulk mr-1 text-secondary"></i>
+                                                        {{ $punto->capPuntoVendita }}
+                                                    @endif
+                                                    @if(!empty($punto->cittaPuntoVendita))
+                                                        <i class="fas fa-city mr-1 text-secondary"></i>
+                                                        {{ $punto->cittaPuntoVendita }}
+                                                    @endif
+                                                    @if(!empty($punto->provinciaPuntoVendita))
+                                                        <i class="fas fa-map mr-1 text-secondary"></i>
+                                                        ({{ $punto->provinciaPuntoVendita }})
+                                                    @endif
+                                                @endif
+                                                @if(!empty($punto->idRegionePuntoVendita) && !empty($regioni[$punto->idRegionePuntoVendita]))
+                                                    <br>
+                                                    <span class="text-muted">
+                                                        <i class="fas fa-flag mr-1 text-secondary"></i>Regione:
+                                                    </span>
+                                                    {{ $regioni[$punto->idRegionePuntoVendita] }}
+                                                @endif
+                                            </span>
                                         </p>
                                     @endif
                                 </div>
@@ -163,7 +196,7 @@
                                                 <span class="font-weight-bold">{{ $materiale->codiceIdentificativoMateriale ?? '-' }}</span>
                                             </p>
                                             <p class="mb-0">
-                                                <span class="text-muted"><i class="fas fa-cubes mr-1"></i> Quantità Richiesta:</span>
+                                                <span class="text-muted"><i class="fas fa-cubes mr-1"></i> Quantità:</span>
                                                 <span class="font-weight-bold">{{ $materiale->quantitaRichiesta ?? '-' }}</span>
                                             </p>
                                         </div>

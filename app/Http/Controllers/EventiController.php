@@ -64,6 +64,8 @@ class EventiController extends Controller
                 ->whereIn('id', $materialiSelezionatiIds)
                 ->get();
 
+            $regioni = \DB::table('regioni')->get();
+
             //$url = "https://field.promomedia.dev/api/apiTest.php?table=valori_rd_evento&idEvento=" . $evento->id;
             
             // Hardcoded URL
@@ -78,7 +80,7 @@ class EventiController extends Controller
                 $datiPassaggi = [];
             }
 
-            return view('eventi.show', compact('evento', 'puntiVendita', 'materiali', 'datiPassaggi'));
+            return view('eventi.show', compact('evento', 'puntiVendita', 'materiali', 'datiPassaggi', 'regioni'));
         } catch (Exception $e) {
             \Log::error('Errore durante il caricamento dell\'evento: ' . $e->getMessage());
             return redirect()->route('eventi.index')->withInput()->withErrors(['error' => 'Errore durante il caricamento dell\'evento: ' . $e->getMessage()]);
