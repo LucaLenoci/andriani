@@ -90,7 +90,7 @@
                     ];
 
                     $fieldIcons = [
-                        'id' => 'fas fa-id-badge',
+                        'id' => 'fas fa-hashtag',
                         'idEvento' => 'fas fa-calendar-alt',
                         'idPuntoVendita' => 'fas fa-store',
                         'dataInizioAdesione' => 'fas fa-calendar-day',
@@ -131,7 +131,7 @@
                     } elseif ($field === 'idEvento' && $adesione->evento) {
                         $formattedValue = $value . ' - ' . $adesione->evento->nomeEvento;
                     } elseif ($field === 'idPuntoVendita' && $adesione->puntoVendita) {
-                        $formattedValue = $adesione->puntoVendita->codicePuntoVendita . ' - ' . $adesione->puntoVendita->ragioneSocialePuntoVendita;
+                        $formattedValue = $adesione->puntoVendita->codicePuntoVendita . ' | ' . $adesione->puntoVendita->insegnaPuntoVendita . ' - ' . $adesione->puntoVendita->ragioneSocialePuntoVendita;
                     } elseif ($field === 'idUtenteCreatoreAdesione' && $adesione->utenteCreatore) {
                         $formattedValue = $adesione->utenteCreatore->name;
                     } else {
