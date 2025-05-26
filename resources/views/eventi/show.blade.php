@@ -106,9 +106,9 @@
             </div>
 
             {{-- Sezione punti vendita associati --}}
-            
+
             <hr>
-            <h3 class="card-title"><i class="fas fa-store mr-2"></i>Punti Vendita Associati</h3>
+			<h5 class="mt-4 mb-3"><i class="fas fa-store mr-2"></i> Punti Vendita Associati</h5>
             <div class="mb-4"></div>
             @if($puntiVendita->isEmpty())
                 <div class="alert alert-info">
@@ -119,12 +119,15 @@
                     @foreach($puntiVendita as $punto)
                         <div class="col-md-4 mb-3">
                             <div class="card border-success shadow-sm h-100">
-                                <div class="card-header bg-success text-white d-flex align-items-center">
-                                    <i class="fas fa-store mr-2"></i>
-                                    <span>
-                                        {{ ' ' . $punto->ragioneSocialePuntoVendita ?? 'Nome non disponibile' }}
-                                    </span>
-                                </div>
+                                <div class="card-header bg-success text-white">
+									<div>
+										<strong>{{ $punto->insegnaPuntoVendita ?? 'Insegna non disponibile' }}</strong>
+									</div>
+									<div>
+										{{ $punto->ragioneSocialePuntoVendita ?? 'Ragione Sociale non disponibile' }}
+									</div>
+								</div>
+
                                 <div class="card-body">
                                     <p class="mb-2">
                                         <i class="fas fa-barcode mr-1 text-secondary"></i>
@@ -140,47 +143,45 @@
                                         !empty($punto->provinciaPuntoVendita) ||
                                         !empty($punto->idRegionePuntoVendita)
                                     )
-                                        <p class="mb-0">
-                                            <i class="fas fa-map-marker-alt mr-1 text-secondary"></i>
-                                            <span class="text-muted">Indirizzo:</span>
-                                            <span>
-                                                @if(!empty($punto->indirizzoPuntoVendita))
-                                                    <i class="fas fa-road mr-1 text-secondary"></i>
-                                                    {{ $punto->indirizzoPuntoVendita }}
-                                                @endif
-                                                @if(!empty($punto->capPuntoVendita) || !empty($punto->cittaPuntoVendita) || !empty($punto->provinciaPuntoVendita))
-                                                    <br>
-                                                    @if(!empty($punto->capPuntoVendita))
-                                                        <i class="fas fa-mail-bulk mr-1 text-secondary"></i>
-                                                        {{ $punto->capPuntoVendita }}
-                                                    @endif
-                                                    @if(!empty($punto->cittaPuntoVendita))
-                                                        <i class="fas fa-city mr-1 text-secondary"></i>
-                                                        {{ $punto->cittaPuntoVendita }}
-                                                    @endif
-                                                    @if(!empty($punto->provinciaPuntoVendita))
-                                                        <i class="fas fa-map mr-1 text-secondary"></i>
-                                                        ({{ $punto->provinciaPuntoVendita }})
-                                                    @endif
-                                                @endif
-                                                @if(!empty($punto->idRegionePuntoVendita))
-                                                    @php
-                                                        $regione = $regioni->firstWhere('id', $punto->idRegionePuntoVendita);
-                                                    @endphp
-                                                    <br>
-                                                    <span class="text-muted">
-                                                        <i class="fas fa-flag mr-1 text-secondary"></i>Regione:
-                                                    </span>
-                                                    {{ $regione ? $regione->nomeRegione : '-' }}
-                                                @else
-                                                    <br>
-                                                    <span class="text-muted">
-                                                        <i class="fas fa-flag mr-1 text-secondary"></i>Regione:
-                                                    </span>
-                                                    <span class="text-muted">-</span>
-                                                @endif
-                                            </span>
-                                        </p>
+
+										@if(!empty($punto->indirizzoPuntoVendita))
+											<p class="mb-0">
+												<i class="fas fa-road mr-1 text-secondary"></i>
+												{{ $punto->indirizzoPuntoVendita }}
+											</p>
+										@endif
+
+										@if(!empty($punto->capPuntoVendita) || !empty($punto->cittaPuntoVendita) || !empty($punto->provinciaPuntoVendita))
+											@if(!empty($punto->capPuntoVendita))
+												<p class="mb-0">
+													<i class="fas fa-mail-bulk mr-1 text-secondary"></i>
+													{{ $punto->capPuntoVendita }}
+												</p>
+											@endif
+											@if(!empty($punto->cittaPuntoVendita) || !empty($punto->provinciaPuntoVendita))
+												<p class="mb-0">
+													@if(!empty($punto->cittaPuntoVendita))
+														<i class="fas fa-city mr-1 text-secondary"></i>
+														{{ $punto->cittaPuntoVendita }}
+													@endif
+													@if(!empty($punto->provinciaPuntoVendita))
+														({{ $punto->provinciaPuntoVendita }})
+													@endif
+												</p>
+											@endif
+
+										@endif
+
+										@if(!empty($punto->idRegionePuntoVendita))
+											@php
+												$regione = $regioni->firstWhere('id', $punto->idRegionePuntoVendita);
+											@endphp
+											<p class="mb-0 text-muted">
+												<i class="fas fa-flag mr-1 text-secondary"></i>
+												{{ $regione ? $regione->nomeRegione : '-' }}
+											</p>
+										@endif
+
                                     @endif
                                 </div>
                             </div>
@@ -192,7 +193,7 @@
             {{-- Sezione materiali associati --}}
             <div class="row">
                 <div class="col-12">
-                    <h4 class="mt-4 mb-3"><i class="fas fa-boxes mr-2"></i> Materiali Associati</h4>
+                    <h5 class="mt-4 mb-3"><i class="fas fa-boxes mr-2"></i> Materiali Associati</h5>
                     <div class="row">
                         @if($materiali->isNotEmpty())
                             @foreach($materiali as $materiale)
