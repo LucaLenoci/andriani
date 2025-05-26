@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Adesione;
 use App\Models\Evento;
 use App\Models\PuntoVendita;
+use App\Models\Giornata;
 
 class DatiPerMop extends Controller
 {
