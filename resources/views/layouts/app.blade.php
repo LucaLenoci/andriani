@@ -263,7 +263,7 @@
 <script>
   tsParticles.load("particles-sidebar", {
 	  fullScreen: { enable: false },
-	  background: { color: "#255459" },
+	  background: { color: "#004750" },
 	  particles: {
 		number: { value: 20 },
 		shape: { type: "circle" },
