@@ -104,23 +104,39 @@
                     </div>
                 @endforeach
             </div>
-
             {{-- Sezione punti vendita associati --}}
             <hr>
-            <h3 class="card-title">Punti Vendita Associati</h3>
-            <div class="mb-5"></div>
-            <br>
+            <h3 class="card-title"><i class="fas fa-store mr-2"></i>Punti Vendita Associati</h3>
+            <div class="mb-4"></div>
             @if($puntiVendita->isEmpty())
-                <p>Nessun punto vendita associato a questo evento.</p>
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle mr-2"></i>Nessun punto vendita associato a questo evento.
+                </div>
             @else
                 <div class="row">
                     @foreach($puntiVendita as $punto)
                         <div class="col-md-4 mb-3">
-                            <div class="card shadow-sm">
+                            <div class="card border-success shadow-sm h-100">
+                                <div class="card-header bg-success text-white d-flex align-items-center">
+                                    <i class="fas fa-store mr-2"></i>
+                                    <span>
+                                        {{ $punto->ragioneSocialePuntoVendita ?? 'Nome non disponibile' }}
+                                    </span>
+                                </div>
                                 <div class="card-body">
-                                    <p>{{ $punto->ragioneSocialePuntoVendita ?? 'Nome non disponibile' }}</p>
-                                    @if(!empty($punto->codicePuntoVendita))
-                                        <span class="text-muted">Codice: {{ $punto->codicePuntoVendita }}</span>
+                                    <p class="mb-2">
+                                        <i class="fas fa-barcode mr-1 text-secondary"></i>
+                                        <span class="text-muted">Codice:</span>
+                                        <span class="font-weight-bold">
+                                            {{ $punto->codicePuntoVendita ?? '-' }}
+                                        </span>
+                                    </p>
+                                    @if(!empty($punto->indirizzoPuntoVendita))
+                                        <p class="mb-0">
+                                            <i class="fas fa-map-marker-alt mr-1 text-secondary"></i>
+                                            <span class="text-muted">Indirizzo:</span>
+                                            <span>{{ $punto->indirizzoPuntoVendita }}</span>
+                                        </p>
                                     @endif
                                 </div>
                             </div>
@@ -130,28 +146,40 @@
             @endif
 
             {{-- Sezione materiali associati --}}
-            <hr>
-            <h3 class="card-title">Materiali Associati</h3>
-            <div class="mb-5"></div>
-            <br>
-            @if($materiali->isEmpty())
-                <p>Nessun materiale associato a questo evento.</p>
-            @else
-                <div class="row">
-                    @foreach($materiali as $materiale)
-                        <div class="col-md-4 mb-3">
-                            <div class="card shadow-sm">
-                                <div class="card-body">
-                                    <p>{{ $materiale->nomeMateriale ?? 'Nome non disponibile' }}</p>
-                                    @if(!empty($materiale->codiceIdentificativoMateriale))
-                                        <span class="text-muted">Codice Identificativo: {{ $materiale->codiceIdentificativoMateriale }}</span>
-                                    @endif
+            <div class="row">
+                <div class="col-12">
+                    <h4 class="mt-4 mb-3"><i class="fas fa-boxes mr-2"></i> Materiali Associati</h4>
+                    <div class="row">
+                        @if($materiali->isNotEmpty())
+                            @foreach($materiali as $materiale)
+                                <div class="col-md-4 mb-3">
+                                    <div class="card border-success shadow h-100">
+                                        <div class="card-header bg-success text-white py-2">
+                                            <strong>{{ $materiale->nomeMateriale ?? '-' }}</strong>
+                                        </div>
+                                        <div class="card-body">
+                                            <p class="mb-2">
+                                                <span class="text-muted"><i class="fas fa-barcode mr-1"></i> Codice Identificativo:</span>
+                                                <span class="font-weight-bold">{{ $materiale->codiceIdentificativoMateriale ?? '-' }}</span>
+                                            </p>
+                                            <p class="mb-0">
+                                                <span class="text-muted"><i class="fas fa-cubes mr-1"></i> Quantità Richiesta:</span>
+                                                <span class="font-weight-bold">{{ $materiale->quantitaRichiesta ?? '-' }}</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        @else
+                            <div class="col-12">
+                                <div class="alert alert-info m-3 mb-0">
+                                    Nessun materiale associato a questa adesione.
                                 </div>
                             </div>
-                        </div>
-                    @endforeach
+                        @endif
+                    </div>
                 </div>
-            @endif
+            </div>
 
             {{-- Sezione RIENTRO DATI associati con filtri di visualizzazione --}}
             <hr>
