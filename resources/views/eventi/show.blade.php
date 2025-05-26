@@ -161,12 +161,21 @@
                                                         ({{ $punto->provinciaPuntoVendita }})
                                                     @endif
                                                 @endif
-                                                @if(!empty($punto->idRegionePuntoVendita) && !empty($regioni[$punto->idRegionePuntoVendita]))
+                                                @if(!empty($punto->idRegionePuntoVendita))
+                                                    @php
+                                                        $regione = $regioni->firstWhere('id', $punto->idRegionePuntoVendita);
+                                                    @endphp
                                                     <br>
                                                     <span class="text-muted">
                                                         <i class="fas fa-flag mr-1 text-secondary"></i>Regione:
                                                     </span>
-                                                    {{ $regioni[$punto->idRegionePuntoVendita] }}
+                                                    {{ $regione ? $regione->nome : '-' }}
+                                                @else
+                                                    <br>
+                                                    <span class="text-muted">
+                                                        <i class="fas fa-flag mr-1 text-secondary"></i>Regione:
+                                                    </span>
+                                                    <span class="text-muted">-</span>
                                                 @endif
                                             </span>
                                         </p>
