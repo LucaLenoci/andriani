@@ -2,12 +2,16 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Model;
+use App\Models\Adesione;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Giornata extends Model
 {
     protected $table = 'giornate';
 
     protected $primaryKey = 'id';
+    public $timestamps = false;
 
     protected $fillable = [
         'idAdesione',
