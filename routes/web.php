@@ -24,6 +24,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/dati-per-mop', [DatiPerMop::class, 'adesioni'])->name('dati-per-mop.adesioni');
 });
 
+Route::get('/dati-per-mop/{tipo}', [DatiPerMop::class, 'perTipo'])->name('dati-per-mop.tipo');
 
 
 require __DIR__.'/auth.php';
