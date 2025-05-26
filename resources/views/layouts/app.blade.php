@@ -8,6 +8,7 @@
 
   <!-- Bootstrap CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
 
 <!-- Font Awesome + Bootstrap Icons -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css">
@@ -125,28 +126,24 @@
       </nav>
       <!--end::Header-->
       <!--begin::Sidebar-->
-      <aside class="app-sidebar shadowstify-content-center align-items-center" data-bs-theme="dark" style="background-color:rgb(37, 84, 89); text-align: center !important;">
-        <!--begin::Sidebar Brand-->
-        <div class="sidebar-brand">
-          <!--begin::Brand Link-->
-          <a href="" class="brand-link">
-            <!--begin::Brand Image-->
-            <img
-              src="{{ asset('adminlte/dist/assets/img/favicon-150x150.webp') }}"
-              alt="AndrianiLogo"
-              class="brand-image opacity-75"
-            />
+      <aside class="app-sidebar shadowstify-content-center align-items-center" data-bs-theme="dark" style="text-align: center !important;">
+	  <!-- Particles background -->
+	  <div id="particles-sidebar" class="position-absolute top-0 start-0 w-100 h-100" style="z-index: 0;"></div>
 
-            <!--begin::Brand Text-->
-            <span class="brand-text fw-light"><b>Andriani</b></span>
-            <!--end::Brand Text-->
+	  <!--begin::Sidebar Brand-->
+	  <div class="sidebar-brand position-relative" style="z-index: 1;">
+		<a href="" class="brand-link">
+		  <img
+			src="{{ asset('adminlte/dist/assets/img/favicon-150x150.webp') }}"
+			alt="AndrianiLogo"
+			class="brand-image opacity-75"
+		  />
+		  <span class="brand-text fw-light"><b>Andriani</b></span>
+		</a>
+	  </div>
+	  <!--end::Sidebar Brand-->
 
-          </a>
-          <!--end::Brand Link-->
-        </div>
-        <!--end::Sidebar Brand-->
-        <!--begin::Sidebar Wrapper-->
-        <div class="sidebar-wrapper">
+	  <div class="sidebar-wrapper position-relative" style="z-index: 1;">
           <nav class="mt-2">
             <!--begin::Sidebar Menu-->
             <ul
@@ -262,6 +259,23 @@
 
 <!-- AdminLTE -->
 <script src="{{ asset('adminlte/dist/js/adminlte.js') }}"></script>
+
+<script>
+  tsParticles.load("particles-sidebar", {
+	  fullScreen: { enable: false },
+	  background: { color: "#255459" },
+	  particles: {
+		number: { value: 20 },
+		shape: { type: "circle" },
+		size: { value: 8, random: true },
+		opacity: { value: 0.2, random: true },
+		color: { value: "#71A850" },
+		move: { enable: true, speed: 1, direction: "top", out_mode: "out" }
+	  }
+	});
+
+</script>
+
 
 @stack('scripts')
     
