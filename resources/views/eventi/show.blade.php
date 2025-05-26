@@ -53,56 +53,78 @@
         
     @endphp
 
-    <div class="card card-success shadow-sm">
-        <div class="card-header">
-            <h3 class="card-title">Informazioni Dettagliate</h3>
-            <div class="card-tools">
-                <a href="{{ route('eventi.index') }}" class="btn btn-sm btn-light" title="Torna alla lista" >
-                    <i class="fas fa-arrow-left"></i> Indietro
-                </a>
-            </div>
+@php
+    // Icone associate a ciascun campo
+    $eventoIcons = [
+        'id' => 'fas fa-hashtag',
+        'nomeEvento' => 'fas fa-tag',
+        'annoEvento' => 'fas fa-calendar-alt',
+        'dataInizioEvento' => 'fas fa-calendar-day',
+        'dataFineEvento' => 'fas fa-calendar-day',
+        'richiestaPresenzaPromoter' => 'fas fa-user-check',
+        'previstaAttivitaDiCaricamento' => 'fas fa-box-open',
+        'previstaAttivitaDiAllestimento' => 'fas fa-tools',
+        'idUtenteCreatoreEvento' => 'fas fa-user',
+        'dataInserimentoEvento' => 'fas fa-clock',
+        'idUtenteModificatoreEvento' => 'fas fa-user-edit',
+        'dataModificaEvento' => 'fas fa-edit',
+    ];
+@endphp
+
+<div class="card card-success shadow-sm">
+    <div class="card-header">
+        <h3 class="card-title">Informazioni Dettagliate</h3>
+        <div class="card-tools">
+            <a href="{{ route('eventi.index') }}" class="btn btn-sm btn-light" title="Torna alla lista" >
+                <i class="fas fa-arrow-left"></i> Indietro
+            </a>
         </div>
-        <br>
-        <div class="card-body">
-            <div class="row">
-                @foreach($eventoFields as $field => $label)
-                    @php
-                        $value = $evento->$field ?? '';
-                        if (in_array($field, $eventoDateTimeFields) && $value) {
-                            try {
-                                $dt = \Illuminate\Support\Carbon::parse($value);
-                                $formattedValue = $dt->format('d/m/Y H:i');
-                            } catch (\Exception $e) {
-                                $formattedValue = $value;
-                            }
-                        } elseif (in_array($field, $eventoDateFields) && $value) {
-                            try {
-                                $dt = \Illuminate\Support\Carbon::parse($value);
-                                $formattedValue = $dt->format('d/m/Y');
-                            } catch (\Exception $e) {
-                                $formattedValue = $value;
-                            }
-                        } elseif (in_array($field, $eventoBooleanFields)) {
-                            $formattedValue = $value ? 'Sì' : 'No';
-                        } elseif ($field === 'idUtenteCreatoreEvento' && $evento->utenteCreatore) {
-                            $formattedValue = $evento->utenteCreatore->name;
-                        } else {
+    </div>
+    <br>
+    <div class="card-body">
+        <div class="row">
+            @foreach($eventoFields as $field => $label)
+                @php
+                    $value = $evento->$field ?? '';
+                    if (in_array($field, $eventoDateTimeFields) && $value) {
+                        try {
+                            $dt = \Illuminate\Support\Carbon::parse($value);
+                            $formattedValue = $dt->format('d/m/Y H:i');
+                        } catch (\Exception $e) {
                             $formattedValue = $value;
                         }
-                    @endphp
-                    <div class="col-md-4 mb-3">
-                        <div class="card shadow-sm">
-                            <div class="card-body">
-                                <h6 class="card-subtitle mb-2 text-muted">{{ $label }}</h6>
-                                @if($formattedValue === null || $formattedValue === '')
-                                    <p class="card-text text-muted">-</p>
-                                @else
-                                    <p class="card-text">{{ $formattedValue }}</p>
-                                @endif
-                            </div>
+                    } elseif (in_array($field, $eventoDateFields) && $value) {
+                        try {
+                            $dt = \Illuminate\Support\Carbon::parse($value);
+                            $formattedValue = $dt->format('d/m/Y');
+                        } catch (\Exception $e) {
+                            $formattedValue = $value;
+                        }
+                    } elseif (in_array($field, $eventoBooleanFields)) {
+                        $formattedValue = $value ? 'Sì' : 'No';
+                    } elseif ($field === 'idUtenteCreatoreEvento' && $evento->utenteCreatore) {
+                        $formattedValue = $evento->utenteCreatore->name;
+                    } else {
+                        $formattedValue = $value;
+                    }
+
+                    $iconClass = $eventoIcons[$field] ?? 'fas fa-info-circle'; // icona di default se non definita
+                @endphp
+                <div class="col-md-4 mb-3">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                <i class="{{ $iconClass }} mr-2"></i> {{ $label }}
+                            </h6>
+                            @if($formattedValue === null || $formattedValue === '')
+                                <p class="card-text text-muted">-</p>
+                            @else
+                                <p class="card-text">{{ $formattedValue }}</p>
+                            @endif
                         </div>
                     </div>
-                @endforeach
+                </div>
+            @endforeach
             </div>
 
             {{-- Sezione punti vendita associati --}}
