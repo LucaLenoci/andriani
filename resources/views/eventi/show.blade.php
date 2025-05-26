@@ -104,7 +104,9 @@
                     </div>
                 @endforeach
             </div>
+
             {{-- Sezione punti vendita associati --}}
+            
             <hr>
             <h3 class="card-title"><i class="fas fa-store mr-2"></i>Punti Vendita Associati</h3>
             <div class="mb-4"></div>
@@ -169,7 +171,7 @@
                                                     <span class="text-muted">
                                                         <i class="fas fa-flag mr-1 text-secondary"></i>Regione:
                                                     </span>
-                                                    {{ $regione ? $regione->nome : '-' }}
+                                                    {{ $regione ? $regione->nomeRegione : '-' }}
                                                 @else
                                                     <br>
                                                     <span class="text-muted">
