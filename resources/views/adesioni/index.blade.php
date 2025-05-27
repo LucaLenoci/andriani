@@ -76,7 +76,7 @@
                     <p class="mb-1"><strong>Creato da:</strong> 
                         {{ $adesione->utenteCreatore->name ?? 'N/A' }}
                     </p>
-                    @if($adesione->updated_at->ne($adesione->created_at))
+                    @if($adesione->updated_at && $adesione->updated_at->ne($adesione->created_at))
                         @if($adesione->statoAdesione === 'annullata')
                             <p class="mb-1">
                                 <strong>Annullata da:</strong>
