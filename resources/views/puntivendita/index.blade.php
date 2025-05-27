@@ -64,16 +64,16 @@
                 @endforeach
             </select>
         </div>
-        <div class="col-md-12">
-            <button type="submit" class="btn btn-primary">Filtra</button>
-            <a href="{{ route('punti-vendita.index') }}" class="btn btn-secondary">Reset</a>
+        <div class="col-12 d-flex flex-column flex-sm-row gap-2 mt-2">
+            <button type="submit" class="btn btn-primary w-100 w-sm-auto">Filtra</button>
+            <a href="{{ route('punti-vendita.index') }}" class="btn btn-secondary w-100 w-sm-auto">Reset</a>
         </div>
     </form>
 </div>
 
 <div class="d-flex justify-content-center mb-4">
     <div>
-        {{ $puntivendita->withQueryString()->onEachSide(2)->links('pagination::bootstrap-4') }}
+        {{ $puntivendita->withQueryString()->onEachSide(1)->links('pagination::bootstrap-4') }}
     </div>
 </div>
 
@@ -119,7 +119,7 @@
 
 <div class="d-flex justify-content-center mb-4">
     <div>
-        {{ $puntivendita->withQueryString()->onEachSide(2)->links('pagination::bootstrap-4') }}
+        {{ $puntivendita->withQueryString()->onEachSide(1)->links('pagination::bootstrap-4') }}
     </div>
 </div>
 
