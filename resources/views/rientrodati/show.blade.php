@@ -2,7 +2,16 @@
 
 @section('content')
 <div class="container">
-    <h3 class="mb-4">Rientro Dati Evento : {{ $evento->nomeEvento }} [ ID {{ $evento->id }} ]</h3>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12">
+				<h3 class="mb-4 text-center text-md-start">
+					<span class="fw-bold d-block">Rientro Dati Evento: {{ $evento->nomeEvento }}</span> 
+					<small class="text-muted d-block">ID Evento: {{ $evento->id }}</small>
+				</h3>
+			</div>
+		</div>
+	</div>
 
     {{-- Filtri --}}
     <form method="GET" class="mb-4" id="filtri-passaggi-form">
