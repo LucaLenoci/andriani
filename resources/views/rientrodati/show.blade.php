@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <h1 class="mb-4">Dettaglio Evento: {{ $evento->titolo }}</h1>
+    <h3 class="mb-4">Rientro Dati Evento : {{ $evento->nomeEvento }} [ ID {{ $evento->id }} ]</h3>
 
     {{-- Filtri --}}
     <form method="GET" class="mb-4" id="filtri-passaggi-form">
