@@ -134,6 +134,8 @@
                         $formattedValue = $adesione->puntoVendita->codicePuntoVendita . ' | ' . $adesione->puntoVendita->insegnaPuntoVendita . ' - ' . $adesione->puntoVendita->ragioneSocialePuntoVendita;
                     } elseif ($field === 'idUtenteCreatoreAdesione' && $adesione->utenteCreatore) {
                         $formattedValue = $adesione->utenteCreatore->name;
+                    } elseif ($field === 'idUtenteModificatoreAdesione' && $adesione->utenteModificatore) {
+                        $formattedValue = $adesione->utenteModificatore->name;
                     } else {
                         $formattedValue = $value;
                     }

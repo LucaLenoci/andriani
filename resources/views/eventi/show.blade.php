@@ -104,6 +104,8 @@
                         $formattedValue = $value ? 'Sì' : 'No';
                     } elseif ($field === 'idUtenteCreatoreEvento' && $evento->utenteCreatore) {
                         $formattedValue = $evento->utenteCreatore->name;
+                    } elseif ($field === 'idUtenteModificatoreEvento' && $evento->utenteModificatore) {
+                        $formattedValue = $evento->utenteModificatore->name;                  
                     } else {
                         $formattedValue = $value;
                     }
