@@ -170,6 +170,12 @@
                   <p>Eventi</p>
                 </a>
               </li>
+              <li class="nav-item">
+                <a href="{{ route('punti-vendita.index') }}" class="nav-link">
+                    <i class="nav-icon bi bi-calendar-event-fill"></i>
+                  <p>Punti Vendita</p>
+                </a>
+              </li>
             </ul>
             <!--end::Sidebar Menu-->
           </nav>

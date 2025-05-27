@@ -25,4 +25,26 @@ class PuntiVenditaController extends Controller
 
         return response()->json($puntiVendita);
     }
+
+    public function index(Request $request)
+    {
+        $search = $request->get('search', '');
+
+        $query = PuntoVendita::with('regione');
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('ragioneSocialePuntoVendita', 'like', '%' . $search . '%')
+                  ->orWhere('codicePuntoVendita', 'like', '%' . $search . '%')
+                  ->orWhere('insegnaPuntoVendita', 'like', '%' . $search . '%')
+                  ->orWhere('indirizzoPuntoVendita', 'like', '%' . $search . '%')
+                  ->orWhere('cittaPuntoVendita', 'like', '%' . $search . '%')
+                  ->orWhere('provinciaPuntoVendita', 'like', '%' . $search . '%');
+            });
+        }
+
+        $puntivendita = $query->orderBy('id', 'desc')->paginate(10);
+
+        return view('puntivendita.index', compact('puntivendita'));
+    }
 }

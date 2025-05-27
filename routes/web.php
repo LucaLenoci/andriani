@@ -19,7 +19,6 @@ Route::get('/', function () {
 
 Route::middleware('auth')->group(function () {
 
-    // Logging generico, escludendo /dashboard/*
     Route::group(['middleware' => function ($request, $next) {
         if (!str_starts_with($request->path(), 'dashboard')) {
             Log::info('Azione utente generica', [
@@ -32,7 +31,6 @@ Route::middleware('auth')->group(function () {
         }
         return $next($request);
     }], function () {
-        // Rotte normali NON dashboard
         Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('verified')->name('dashboard');
         Route::get('adesioni', [AdesioniController::class, 'index'])->name('adesioni.index');
         Route::resource('adesioni', AdesioniController::class);
@@ -43,6 +41,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/materiali/search', [MaterialiController::class, 'search'])->name('materiali.search');
         Route::get('/dati-per-mop', [DatiPerMop::class, 'adesioni'])->name('dati-per-mop.adesioni');
         Route::get('/rientro-dati/{id}', [RientroDatiController::class, 'show'])->name('rientro-dati.show');
+        Route::get('/punti-vendita', [PuntiVenditaController::class, 'index'])->name('punti-vendita.index');
     });
 
     // SOC con admin check + log
