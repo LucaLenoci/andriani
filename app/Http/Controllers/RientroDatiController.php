@@ -7,56 +7,127 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Exception;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Pagination\LengthAwarePaginator;
 
-class EventiController extends Controller
+
+class RientroDatiController extends Controller
 {
-    public function show($id)
+    public function show(Request $request, $id)
     {
         try {
             $evento = Evento::findOrFail($id);
 
-            // Recupera gli id dei punti vendita associati
-            $puntiVenditaSelezionatiIds = \DB::table('eventopuntivendita')
-                ->where('idEvento', $id)
-                ->pluck('idPuntoVendita')
-                ->toArray();
-
-            $ids = collect($puntiVenditaSelezionatiIds)->pluck('id')->toArray();
-
-            // Recupera i dati completi dei punti vendita associati
-            $puntiVendita = \DB::table('puntivendita')
-                ->whereIn('id', $puntiVenditaSelezionatiIds)
+            $puntiVendita = \DB::table('eventopuntivendita')
+                ->join('puntivendita', 'eventopuntivendita.idPuntoVendita', '=', 'puntivendita.id')
+                ->where('eventopuntivendita.idEvento', $id)
                 ->get();
 
-            $materialiSelezionatiIds = \DB::table('eventomateriali')
-                ->where('idEvento', $id)
-                ->pluck('idMateriale')
-                ->toArray();
-
-            $materiali = \DB::table('materiali')
-                ->whereIn('id', $materialiSelezionatiIds)
+            $materiali = \DB::table('eventomateriali')
+                ->join('materiali', 'eventomateriali.idMateriale', '=', 'materiali.id')
+                ->where('eventomateriali.idEvento', $id)
                 ->get();
 
             $regioni = \DB::table('regioni')->get();
 
             //$url = "https://field.promomedia.dev/api/apiTest.php?table=valori_rd_evento&idEvento=" . $evento->id;
-            
+
             // Hardcoded URL
             $url = "https://field.promomedia.dev/api/apiTest.php?table=valori_rd_evento&idEvento=558";
 
-
             $response = Http::withoutVerifying()->get($url);
+            $datiPassaggiRaw = $response->successful() ? $response->json() : [];
 
-            if ($response->successful()) {
-                $datiPassaggi = $response->json();
-            } else {
-                $datiPassaggi = [];
+            // Filtro
+            $filtroUtente = $request->input('filtro_utente');
+            $filtroProdotto = $request->input('filtro_prodotto');
+            $filtroPdv = $request->input('filtro_pdv');
+                        
+            // Prepara dati filtrati
+            $gruppi = [];
+
+            foreach ($datiPassaggiRaw as $passaggiUtente) {
+                if (empty($passaggiUtente)) continue;
+
+                $utenteId = $passaggiUtente[0]['idUtente'] ?? null;
+
+                if ($filtroUtente && $utenteId != $filtroUtente) continue;
+
+                $passaggiPerProdotto = [];
+
+                foreach ($passaggiUtente as $passaggio) {
+                    $prodotto = $passaggio['prodotto'] ?? 'Prodotto non specificato';
+
+                    if ($filtroProdotto && $prodotto != $filtroProdotto) continue;
+                    if ($filtroPdv && ($passaggio['pdv']['Codice'] ?? null) != $filtroPdv) continue;
+
+                    $passaggiPerProdotto[$prodotto][] = $passaggio;
+                }
+
+                if (!empty($passaggiPerProdotto)) {
+                    $gruppi[] = [
+                        'utenteId' => $utenteId,
+                        'utenteNome' => $passaggiUtente[0]['nomeUtente'] ?? 'Utente sconosciuto',
+                        'pdv' => $passaggiUtente[0]['pdv'] ?? [],
+                        'idPassaggio' => $passaggiUtente[0]['idPassaggio'] ?? null,
+                        'prodotti' => $passaggiPerProdotto,
+                    ];
+                }
             }
 
-            return view('rientrodati.show', compact('evento', 'puntiVendita', 'datiPassaggi'));
+            // Pagina e imposta i risultati
+            $paginaCorrente = LengthAwarePaginator::resolveCurrentPage();
+            $perPagina = 5;
+            $gruppiPaginati = new LengthAwarePaginator(
+                array_slice($gruppi, ($paginaCorrente - 1) * $perPagina, $perPagina),
+                count($gruppi),
+                $perPagina,
+                $paginaCorrente,
+                ['path' => $request->url(), 'query' => $request->query()]
+            );
+
+            // Estrai valori unici per i filtri
+            $utentiUnici = [];
+            $prodottiUnici = [];
+            $pdvUnici = [];
+
+            foreach ($datiPassaggiRaw as $passaggiUtente) {
+                if (empty($passaggiUtente)) continue;
+
+                $utente = $passaggiUtente[0];
+                $utenteId = $utente['idUtente'] ?? '';
+                $utenteNome = $utente['nomeUtente'] ?? 'Utente sconosciuto';
+                $utentiUnici[$utenteId] = $utenteNome;
+
+                foreach ($passaggiUtente as $passaggio) {
+                    $prodotto = $passaggio['prodotto'] ?? 'Prodotto non specificato';
+                    $prodottiUnici[$prodotto] = true;
+
+                    $pdv = $passaggio['pdv'] ?? [];
+                    if (isset($pdv['Codice'])) {
+                        $codice = $pdv['Codice'];
+                        $ragione = $pdv['RagioneSociale'] ?? '';
+                        $pdvUnici[$codice] = $codice . ($ragione ? ' - ' . $ragione : '');
+                    }
+                }
+            }
+
+            return view('rientrodati.show', compact(
+                'evento',
+                'puntiVendita',
+                'materiali',
+                'regioni',
+                'gruppiPaginati',
+                'utentiUnici',
+                'prodottiUnici',
+                'pdvUnici',
+                'filtroUtente',
+                'filtroProdotto',
+                'filtroPdv'
+            ));
         } catch (Exception $e) {
             \Log::error('Errore durante il caricamento dell\'evento: ' . $e->getMessage());
             return redirect()->route('eventi.index')->withInput()->withErrors(['error' => 'Errore durante il caricamento dell\'evento: ' . $e->getMessage()]);
         }
     }
+
 }

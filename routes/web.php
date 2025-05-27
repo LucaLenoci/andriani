@@ -7,6 +7,8 @@ use App\Http\Controllers\AdesioniController;
 use App\Http\Controllers\EventiController;
 use App\Http\Controllers\PuntiVenditaController;
 use App\Http\Controllers\Api\DatiPerMop;
+use App\Http\Controllers\MaterialiController;
+use App\Http\Controllers\RientroDatiController;
 
 Route::get('/', function () {
     return redirect()->route('login');
