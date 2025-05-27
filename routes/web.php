@@ -22,6 +22,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/punti-vendita/search', [PuntiVenditaController::class, 'search'])->name('punti-vendita.search');
     Route::get('/materiali/search', [MaterialiController::class, 'search'])->name('materiali.search');
     Route::get('/dati-per-mop', [DatiPerMop::class, 'adesioni'])->name('dati-per-mop.adesioni');
+    Route::get('/rientro-dati/{id}', [RientroDatiController::class, 'show'])->name('rientro-dati.show');
 });
 
 Route::get('/dati-per-mop/{tipo}', [DatiPerMop::class, 'perTipo'])->name('dati-per-mop.tipo');
