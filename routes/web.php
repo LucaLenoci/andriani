@@ -4,6 +4,16 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AdesioniController;
+use App\Http\Controllers\EventiController;
+use App\Http\Controllers\PuntiVenditaController;
+use App\Http\Controllers\Api\DatiPerMop;
+use App\Http\Controllers\MaterialiController;
+use App\Http\Controllers\RientroDatiController;
+
+
 Route::middleware('auth')->group(function () {
 
     // Logging generico, escludendo /dashboard/*
