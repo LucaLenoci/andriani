@@ -172,7 +172,7 @@
               </li>
               <li class="nav-item">
                 <a href="{{ route('punti-vendita.index') }}" class="nav-link">
-                    <i class="nav-icon bi bi-shop-window"></i>
+                    <i class="nav-icon bi bi-basket-fill"></i>
                   <p>Punti Vendita</p>
                 </a>
               </li>
