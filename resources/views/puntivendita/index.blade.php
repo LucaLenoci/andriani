@@ -45,7 +45,7 @@
         <div class="card-body py-4 px-3">
             <div class="row align-items-center">
                 <div class="col-12 col-md-3 text-center mb-3 mb-md-0">
-                    <div class="rounded-circle bg-primary text-white d-flex flex-column justify-content-center align-items-center mx-auto" style="width: 70px; height: 70px; font-size: 1.5rem;">
+                    <div class="bg-primary text-white d-flex flex-column justify-content-center align-items-center mx-auto" style="width: 70px; height: 70px; font-size: 1.5rem;">
                         <span>ID</span>
                         <span class="fw-bold">{{ $pv->id }}</span>
                     </div>
