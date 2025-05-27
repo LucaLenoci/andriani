@@ -40,13 +40,18 @@ class Evento extends Model
         return $this->belongsTo(User::class, 'idUtenteCreatoreEvento');
     }
 
+    public function utenteModificatore()
+    {
+        return $this->belongsTo(User::class, 'idUtenteModificatoreEvento');
+    }
+
     public function puntiVendita()
-{
-    return $this->belongsToMany(
-        PuntoVendita::class,
-        'eventipuntivendita',
-        'idEvento',      // Foreign key su eventipuntivendita per Evento
-        'idPuntoVendita' // Foreign key su eventipuntivendita per PuntoVendita
-    );
-}
+    {
+        return $this->belongsToMany(
+            PuntoVendita::class,
+            'eventipuntivendita',
+            'idEvento',      // Foreign key su eventipuntivendita per Evento
+            'idPuntoVendita' // Foreign key su eventipuntivendita per PuntoVendita
+        );
+    }
 }
