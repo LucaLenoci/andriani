@@ -29,8 +29,10 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/dati-per-mop/{tipo}', [DatiPerMop::class, 'perTipo'])->name('dati-per-mop.tipo');
 
-Route::get('/dashboard/logs', [App\Http\Controllers\SocDashboardController::class, 'index'])->name('dashboard.logs');
-Route::get('/dashboard/statistiche', [App\Http\Controllers\SocDashboardController::class, 'statistiche'])->name('dashboard.statistiche');
-Route::get('/dashboard/errori', [App\Http\Controllers\SocDashboardController::class, 'errori'])->name('dashboard.errori');
+Route::middleware(['admin'])->group(function () {
+    Route::get('/dashboard/logs', [App\Http\Controllers\SocDashboardController::class, 'index'])->name('dashboard.logs');
+    Route::get('/dashboard/statistiche', [App\Http\Controllers\SocDashboardController::class, 'statistiche'])->name('dashboard.statistiche');
+    Route::get('/dashboard/errori', [App\Http\Controllers\SocDashboardController::class, 'errori'])->name('dashboard.errori');
+});
 
 require __DIR__.'/auth.php';
