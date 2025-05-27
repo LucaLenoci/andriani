@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Log;
 Route::middleware('auth')->group(function () {
 
     // Logging generico, escludendo /dashboard/*
-    Route::middleware(function ($request, $next) {
+    Route::group(['middleware' => function ($request, $next) {
         if (!str_starts_with($request->path(), 'dashboard')) {
             Log::info('Azione utente generica', [
                 'user_id' => Auth::id(),
@@ -18,9 +18,8 @@ Route::middleware('auth')->group(function () {
             ]);
         }
         return $next($request);
-    })->group(function () {
-
-        // Qui dentro tutte le tue rotte non dashboard
+    }], function () {
+        // Rotte normali NON dashboard
         Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('verified')->name('dashboard');
         Route::get('adesioni', [AdesioniController::class, 'index'])->name('adesioni.index');
         Route::resource('adesioni', AdesioniController::class);
@@ -33,8 +32,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/rientro-dati/{id}', [RientroDatiController::class, 'show'])->name('rientro-dati.show');
     });
 
-    // Qui rotte dashboard SOC, con admin check + log SOC
-    Route::middleware(function ($request, $next) {
+    // SOC con admin check + log
+    Route::group(['middleware' => function ($request, $next) {
         if (!Auth::check() || Auth::id() !== 1) {
             abort(403, 'Accesso non autorizzato - solo admin');
         }
@@ -46,9 +45,10 @@ Route::middleware('auth')->group(function () {
             'input' => $request->except(['password', 'password_confirmation']),
         ]);
         return $next($request);
-    })->group(function () {
+    }], function () {
         Route::get('/dashboard/logs', [App\Http\Controllers\SocDashboardController::class, 'index'])->name('dashboard.logs');
         Route::get('/dashboard/statistiche', [App\Http\Controllers\SocDashboardController::class, 'statistiche'])->name('dashboard.statistiche');
         Route::get('/dashboard/errori', [App\Http\Controllers\SocDashboardController::class, 'errori'])->name('dashboard.errori');
     });
+
 });
