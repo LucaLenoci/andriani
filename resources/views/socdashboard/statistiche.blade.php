@@ -23,10 +23,7 @@
     <h2>Statistiche Interazioni Utente</h2>
     <br>
     <div class="row">
-        <div class="col-md-6">
-            <canvas id="graficoRuolo"></canvas>
-        </div>
-        <div class="col-md-6">
+        <div class="col-md-12">
             <canvas id="graficoGiorno"></canvas>
         </div>
     </div>
@@ -38,7 +35,7 @@
     </div>
 
     <div class="row mt-4">
-        <div class="col-md-6">
+        <div class="col-md-12">
             <canvas id="graficoTopUtenti"></canvas>
         </div>
     </div>
@@ -67,7 +64,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    const dataRuolo = @json($stats['per_ruolo']);
     const dataMetodo = @json($stats['per_metodo']);
     const dataGiorno = @json($stats['per_giorno']);
     const dataTopUtenti = @json($stats['top_utenti']);
@@ -107,19 +103,6 @@
             axis: 'x',
             intersect: false
         }
-    });
-
-    new Chart(document.getElementById('graficoRuolo'), {
-        type: 'bar',
-        data: {
-            labels: Object.keys(dataRuolo),
-            datasets: [{
-                label: 'Interazioni per ruolo',
-                data: Object.values(dataRuolo),
-                backgroundColor: ['#007bff', '#28a745', '#ffc107', '#dc3545']
-            }]
-        },
-        options: commonOptions('Interazioni per Ruolo')
     });
 
     new Chart(document.getElementById('graficoGiorno'), {
