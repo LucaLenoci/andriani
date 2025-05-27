@@ -46,7 +46,7 @@
             <div class="row align-items-center">
                 <div class="col-12 col-md-3 text-center mb-3 mb-md-0">
                     <h4 class="mb-2">ID: {{ $pv->id }}</h4>
-                    <span class="badge bg-prymary text-dark mt-3 px-3 py-2 fs-6 shadow-sm">
+                    <span class="badge bg-primary text-dark mt-3 px-3 py-2 fs-6 shadow-sm">
                         Codice: <span class="fw-bold">{{ $pv->codicePuntoVendita }}</span>
                     </span>
                 </div>
