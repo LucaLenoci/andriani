@@ -303,6 +303,8 @@ public function create(Request $request)
             $request->merge([
                 'idUtenteCreatoreAdesione' => Auth::user()->id,
                 'dataInserimentoAdesione' => now('Europe/Rome'),
+                'idUtenteModificatoreAdesione' => Auth::user()->id,
+                'dataModificaAdesione' => now('Europe/Rome'),
                 'statoAdesione' => 'bozza'
             ]);
 
@@ -491,6 +493,12 @@ public function create(Request $request)
                     $request->merge(['giornate_allestimento' => $giornateAllestimento]);
                 }
             }
+
+            //Aggiungiamo utente modificatore e data modifica
+            $request->merge([
+                'idUtenteModificatoreAdesione' => Auth::user()->id,
+                'dataModificaAdesione' => now('Europe/Rome')
+            ]);
 
             $adesione = Adesione::findOrFail($id);
 
@@ -801,6 +809,10 @@ public function create(Request $request)
             if ($adesione->statoAdesione === 'inviata' || $adesione->statoAdesione === 'annullata') {
                 return redirect()->route('adesioni.index')->with('error', 'Non è possibile eliminare un\'adesione inviata o annullata.');
             }
+
+            // Aggiungiamo l'utente modificatore e la data di modifica
+            $adesione->idUtenteModificatoreAdesione = Auth::user()->id;
+            $adesione->dataModificaAdesione = now('Europe/Rome');
 
             $adesione->statoAdesione = 'annullata';
             $adesione->save();

@@ -55,4 +55,9 @@ class Adesione extends Model
     {
         return $this->belongsTo(User::class, 'idUtenteCreatoreAdesione');
     }
+
+    public function utenteModificatore()
+    {
+        return $this->belongsTo(User::class, 'idUtenteModificatoreAdesione');
+    }
 }
