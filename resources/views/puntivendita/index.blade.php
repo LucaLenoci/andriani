@@ -28,9 +28,44 @@
 
 <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-2">
     <h3>Punti Vendita</h3>
-    <form action="{{ route('punti-vendita.index') }}" method="GET" class="d-flex flex-column flex-sm-row gap-2">
-        <input type="text" name="search" class="form-control me-sm-2 mb-2 mb-sm-0" placeholder="Cerca punto vendita..." value="{{ request('search') }}">
-        <button type="submit" class="btn btn-primary">Cerca</button>
+    <form action="{{ route('punti-vendita.index') }}" method="GET" class="row g-2 mb-3">
+        <div class="col-md-3">
+            <input type="text" name="search" class="form-control" placeholder="Cerca punto vendita..." value="{{ request('search') }}">
+        </div>
+        <div class="col-md-3">
+            <select name="regione" class="form-select">
+                <option value="">Tutte le Regioni</option>
+                @foreach ($regioni as $regione)
+                    <option value="{{ $regione }}" {{ request('regione') == $regione ? 'selected' : '' }}>
+                        {{ $regione }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select name="provincia" class="form-select">
+                <option value="">Tutte le Province</option>
+                @foreach ($province as $provincia)
+                    <option value="{{ $provincia }}" {{ request('provincia') == $provincia ? 'selected' : '' }}>
+                        {{ $provincia }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select name="citta" class="form-select">
+                <option value="">Tutte le Città</option>
+                @foreach ($citta as $city)
+                    <option value="{{ $city }}" {{ request('citta') == $city ? 'selected' : '' }}>
+                        {{ $city }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+        <div class="col-md-12 d-flex justify-content-end gap-2">
+            <button type="submit" class="btn btn-primary">Filtra</button>
+            <a href="{{ route('punti-vendita.index') }}" class="btn btn-secondary">Reset</a>
+        </div>
     </form>
 </div>
 

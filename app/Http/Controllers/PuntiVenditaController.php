@@ -28,23 +28,38 @@ class PuntiVenditaController extends Controller
 
     public function index(Request $request)
     {
-        $search = $request->get('search', '');
+        $query = PuntoVendita::query()->with('regione');
 
-        $query = PuntoVendita::with('regione');
-
-        if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('ragioneSocialePuntoVendita', 'like', '%' . $search . '%')
-                  ->orWhere('codicePuntoVendita', 'like', '%' . $search . '%')
-                  ->orWhere('insegnaPuntoVendita', 'like', '%' . $search . '%')
-                  ->orWhere('indirizzoPuntoVendita', 'like', '%' . $search . '%')
-                  ->orWhere('cittaPuntoVendita', 'like', '%' . $search . '%')
-                  ->orWhere('provinciaPuntoVendita', 'like', '%' . $search . '%');
+        if ($request->filled('search')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('insegnaPuntoVendita', 'like', '%' . $request->search . '%')
+                ->orWhere('codicePuntoVendita', 'like', '%' . $request->search . '%')
+                ->orWhere('cittaPuntoVendita', 'like', '%' . $request->search . '%');
             });
         }
 
-        $puntivendita = $query->orderBy('id', 'desc')->paginate(10);
+        if ($request->filled('regione')) {
+            $query->whereHas('regione', function ($q) use ($request) {
+                $q->where('nomeRegione', $request->regione);
+            });
+        }
 
-        return view('puntivendita.index', compact('puntivendita'));
+        if ($request->filled('provincia')) {
+            $query->where('provinciaPuntoVendita', $request->provincia);
+        }
+
+        if ($request->filled('citta')) {
+            $query->where('cittaPuntoVendita', $request->citta);
+        }
+
+        $puntivendita = $query->paginate(10);
+
+        // Popolamento dinamico per filtri a discesa
+        $regioni = Regione::orderBy('nomeRegione')->pluck('nomeRegione')->unique();
+        $province = PuntoVendita::select('provinciaPuntoVendita')->distinct()->pluck('provinciaPuntoVendita');
+        $citta = PuntoVendita::select('cittaPuntoVendita')->distinct()->pluck('cittaPuntoVendita');
+
+        return view('puntivendita.index', compact('puntivendita', 'regioni', 'province', 'citta'));
     }
+
 }
