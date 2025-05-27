@@ -26,13 +26,15 @@
     </div>
 @endif
 
-<div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-2">
-    <h3>Punti Vendita</h3>
-    <form action="{{ route('punti-vendita.index') }}" method="GET" class="row g-2 mb-3">
+<h3 class="mb-4">Punti Vendita</h3>
+
+
+<div class="d-flex flex-column flex-md-row justify-content-center align-items-center align-items-md-center mb-4 gap-2">
+    <form action="{{ route('punti-vendita.index') }}" method="GET" class="d-flex flex-column flex-sm-row gap-2">
         <div class="col-md-3">
             <input type="text" name="search" class="form-control" placeholder="Cerca punto vendita..." value="{{ request('search') }}">
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <select name="regione" class="form-select">
                 <option value="">Tutte le Regioni</option>
                 @foreach ($regioni as $regione)
@@ -42,7 +44,7 @@
                 @endforeach
             </select>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <select name="provincia" class="form-select">
                 <option value="">Tutte le Province</option>
                 @foreach ($province as $provincia)
@@ -52,7 +54,7 @@
                 @endforeach
             </select>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <select name="citta" class="form-select">
                 <option value="">Tutte le Città</option>
                 @foreach ($citta as $city)
@@ -62,7 +64,7 @@
                 @endforeach
             </select>
         </div>
-        <div class="col-md-12 d-flex justify-content-end gap-2">
+        <div class="col-md-12">
             <button type="submit" class="btn btn-primary">Filtra</button>
             <a href="{{ route('punti-vendita.index') }}" class="btn btn-secondary">Reset</a>
         </div>
