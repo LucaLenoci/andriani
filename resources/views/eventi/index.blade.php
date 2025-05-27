@@ -75,6 +75,19 @@
                     <p class="mb-1"><strong>Creato da:</strong> 
                         {{ $evento->utenteCreatore->name ?? 'N/A' }}
                     </p>
+                    @if($evento->dataModificaEvento && $evento->dataModificaEvento->format('d/m/Y H:i:s') !== $evento->dataInserimentoEvento->format('d/m/Y H:i:s'))
+                        @if($evento->statoEvento === 'annullato')
+                            <p class="mb-1">
+                                <strong>Annullato da:</strong>
+                                {{ $evento->utenteModificatore->name ?? 'N/A' }}
+                            </p>
+                        @else
+                            <p class="mb-1">
+                                <strong>Modificato da:</strong>
+                                {{ $evento->utenteModificatore->name ?? 'N/A' }}
+                            </p>
+                        @endif
+                    @endif
                 </div>
 
                 <div class="col-12 col-md-2 mt-2 d-flex flex-row flex-md-column align-items-end gap-2">

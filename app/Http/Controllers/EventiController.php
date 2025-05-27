@@ -129,6 +129,8 @@ class EventiController extends Controller
             $request->merge([
                 'idUtenteCreatoreEvento' => Auth::user()->id,
                 'dataInserimentoEvento' => now('Europe/Rome'),
+                'idUtenteModificatoreEvento' => Auth::user()->id,
+                'dataModificaEvento' => now('Europe/Rome'),
                 'statoEvento' => 'creato',
             ]);
 
@@ -252,6 +254,10 @@ class EventiController extends Controller
                 'selectedMateriali.*.integer' => 'L\'ID del materiale deve essere un numero intero.',
                 'selectedMateriali.*.exists' => 'Uno o più materiali selezionati non sono validi.',
             ]);
+
+            //aggiungi l'utente che modifica l'evento
+            $data['idUtenteModificatoreEvento'] = Auth::user()->id;
+            $data['dataModificaEvento'] = now('Europe/Rome');
 
             // Aggiorna dati evento
             $evento->update($data);
