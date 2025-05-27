@@ -44,33 +44,35 @@
     <div class="card mb-4 shadow border-0">
         <div class="card-body py-4 px-3">
             <div class="row align-items-center">
-                <div class="col-12 col-md-3 text-center mb-3 mb-md-0">
-                    <h4 class="mb-2">ID: {{ $pv->id }}</h4>
-                    <span class="badge bg-primary text-dark mt-3 px-3 py-2 fs-6 shadow-sm">
-                        Codice: <span class="fw-bold">{{ $pv->codicePuntoVendita }}</span>
-                    </span>
+            <div class="col-12 col-md-2 text-center mb-3 mb-md-0">
+                <h4 class="mb-2">ID: {{ $pv->id }}</h4>
+                <span class="badge bg-primary text-white mt-3 px-3 py-2 fs-6 shadow-sm">
+                Codice: <span class="fw-bold">{{ $pv->codicePuntoVendita }}</span>
+                </span>
+            </div>
+            <div class="col-12 col-md-4 mb-3 mb-md-0">
+                <h5 class="mb-2 text-primary fw-bold">
+                {{ $pv->insegnaPuntoVendita ?? 'N/A' }}
+                </h5>
+                <div class="mb-1">
+                <i class="bi bi-building me-1"></i>
+                <strong>Ragione Sociale:</strong> {{ $pv->ragioneSocialePuntoVendita ?? 'N/A' }}
                 </div>
-                <div class="col-12 col-md-6">
-                    <h5 class="mb-2 text-primary fw-bold">
-                        {{ $pv->insegnaPuntoVendita ?? 'N/A' }}
-                    </h5>
-                    <div class="mb-1">
-                        <i class="bi bi-building me-1"></i>
-                        <strong>Ragione Sociale:</strong> {{ $pv->ragioneSocialePuntoVendita ?? 'N/A' }}
-                    </div>
-                    <div class="mb-1">
-                        <i class="bi bi-geo-alt me-1"></i>
-                        <strong>Indirizzo:</strong>
-                        {{ $pv->indirizzoPuntoVendita }},
-                        {{ $pv->capPuntoVendita }}
-                        {{ $pv->cittaPuntoVendita }}
-                        ({{ $pv->provinciaPuntoVendita }})
-                    </div>
-                    <div>
-                        <i class="bi bi-map me-1"></i>
-                        <strong>Regione:</strong> {{ $pv->regione->nomeRegione ?? 'N/A' }}
-                    </div>
+            </div>
+            <div class="col-12 col-md-4 mb-3 mb-md-0">
+                <div class="mb-1">
+                <i class="bi bi-geo-alt me-1"></i>
+                <strong>Indirizzo:</strong>
+                {{ $pv->indirizzoPuntoVendita }},
+                {{ $pv->capPuntoVendita }}
+                {{ $pv->cittaPuntoVendita }}
+                ({{ $pv->provinciaPuntoVendita }})
                 </div>
+            </div>
+            <div class="col-12 col-md-2 text-center text-md-start">
+                <i class="bi bi-map me-1"></i>
+                <strong>Regione:</strong> {{ $pv->regione->nomeRegione ?? 'N/A' }}
+            </div>
             </div>
         </div>
     </div>
