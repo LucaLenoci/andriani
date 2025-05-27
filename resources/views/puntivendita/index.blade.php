@@ -28,7 +28,7 @@
 
 <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-2">
     <h3>Punti Vendita</h3>
-    <form action="{{ route('puntivendita.index') }}" method="GET" class="d-flex flex-column flex-sm-row gap-2">
+    <form action="{{ route('punti-vendita.index') }}" method="GET" class="d-flex flex-column flex-sm-row gap-2">
         <input type="text" name="search" class="form-control me-sm-2 mb-2 mb-sm-0" placeholder="Cerca punto vendita..." value="{{ request('search') }}">
         <button type="submit" class="btn btn-primary">Cerca</button>
     </form>
