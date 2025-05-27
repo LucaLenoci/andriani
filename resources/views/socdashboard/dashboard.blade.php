@@ -29,23 +29,6 @@
 
         <div class="row g-2 align-items-end" style="text-align: center; justify-content: center;">
             <div class="col-md-2">
-                <label>Ruolo</label>
-                <select name="filter_role" class="form-select">
-                    <option value="">-- Tutti --</option>
-                    <option value="ADMIN" {{ request('filter_role') == 'ADMIN' ? 'selected' : '' }}>ADMIN</option>
-                    <option value="AGENZIA" {{ request('filter_role') == 'AGENZIA' ? 'selected' : '' }}>AGENZIA</option>
-                    <option value="TRADE MARKETING" {{ request('filter_role') == 'TRADE MARKETING' ? 'selected' : '' }}>TRADE MARKETING</option>
-                    <option value="APPROVATORI" {{ request('filter_role') == 'APPROVATORI' ? 'selected' : '' }}>APPROVATORI</option>
-                    <option value="FUNZIONARIO DI VENDITA" {{ request('filter_role') == 'FUNZIONARIO DI VENDITA' ? 'selected' : '' }}>FUNZIONARIO DI VENDITA</option>
-                    <option value="CUSTOMER TEAM" {{ request('filter_role') == 'CUSTOMER TEAM' ? 'selected' : '' }}>CUSTOMER TEAM</option>
-                    <option value="HELP DESK" {{ request('filter_role') == 'HELP DESK' ? 'selected' : '' }}>HELP DESK</option>
-                    <option value="DISTRICT MANAGER" {{ request('filter_role') == 'DISTRICT MANAGER' ? 'selected' : '' }}>DISTRICT MANAGER</option>
-                    <option value="LOCAL KEY ACCOUNT" {{ request('filter_role') == 'LOCAL KEY ACCOUNT' ? 'selected' : '' }}>LOCAL KEY ACCOUNT</option>
-
-                </select>
-            </div>
-
-            <div class="col-md-2">
                 <label>Metodo</label>
                 <select name="filter_method" class="form-select">
                     <option value="">-- Tutti --</option>
@@ -81,7 +64,6 @@
                 <th style="width: 10%;">ID Utente</th>
                 <th style="width: 15%;">Nome</th>
                 <th style="width: 20%;">Email</th>
-                <th style="width: 10%;">Ruolo</th>
                 <th style="width: 10%;">IP</th>
                 <th style="width: 15%;">URL</th>
                 <th style="width: 10%;">Metodo</th>
@@ -96,12 +78,9 @@
                     <td style="word-wrap: break-word;">{{ $log['id'] }}</td>
                     <td style="word-wrap: break-word;">{{ $log['username'] }}</td>
                     <td style="word-wrap: break-word;">{{ $log['email'] }}</td>
-                    <td style="word-wrap: break-word;">{{ $log['ruolo'] }}</td>
                     <td style="word-wrap: break-word;">{{ $log['ip'] }}</td>
                     <td style="word-wrap: break-word;">{{ $log['url'] }}</td>
                     <td style="word-wrap: break-word;">{{ $log['method'] }}</td>
-                    <td style="word-wrap: break-word;">{{ $log['action'] }}</td>
-                    <td style="word-wrap: break-word;">{{ $log['details'] }}</td>
                     <td style="word-wrap: break-word;">{{ $log['time'] }}</td>
                 </tr>
             @endforeach

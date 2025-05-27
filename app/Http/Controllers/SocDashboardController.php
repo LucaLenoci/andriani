@@ -18,7 +18,6 @@ class SocDashboardController extends Controller
     public function index()
     {
         $search = request('search');
-        $filterRole = request('filter_role');
         $filterMethod = request('filter_method');
         $startDate = request('start_date');
         $endDate = request('end_date');
@@ -32,68 +31,59 @@ class SocDashboardController extends Controller
         $logs = [];
 
         foreach ($lines as $line) {
-            if (str_contains($line, 'Interazione utente')) {
-                preg_match('/^\[(.*?)\] .*?Interazione utente (.*)$/', $line, $matches);
-                if (!$matches) continue;
+    if (str_contains($line, 'Azione')) {
+        preg_match('/^\[(.*?)\] .*?Azione (.*)$/', $line, $matches);
+        if (!$matches) continue;
 
-                $timestamp = $matches[1];
-                $json = $matches[2];
-                $data = json_decode($json, true);
+        $timestamp = $matches[1];
+        $azione = $matches[2];
 
-                if (!$data || !isset($data['user_id'])) continue;
+        // Trova l'inizio della parte JSON
+        $jsonStart = strpos($azione, '{');
+        if ($jsonStart === false) continue; // se non trova JSON salta
 
-                $user = DB::table('utente')->where('id', $data['user_id'])->first();
-                if ($user) {
-                    $data['email'] = $user->email;
-                    $data['username'] = $user->username;
-                    $data['ruolo'] = $user->ruolo;
-                } else {
-                    $data['username'] = 'N/A';
-                    $data['email'] = 'N/A';
-                    $data['ruolo'] = 'N/A';
-                }
+        $json = substr($azione, $jsonStart);
+        $data = json_decode($json, true);
 
-                $ruolo = DB::table('utente_ruolo')->where('id', $data['ruolo'])->first();
-                $data['ruolo'] = $ruolo ? $ruolo->nome : 'N/A';
-                if($data['url']=="http://localhost:8000/log-action"){
-                    $url = $data['payload']['url'] ?? 'N/A';
-                    $dettagli = $data['payload']['details'] ?? 'N/A';
-                }else{
-                    $url = $data['url'] ?? 'N/A';
-                    $dettagli = $data['payload']?? 'N/A';
-                }
+        if (!$data || !isset($data['user_id'])) continue;
 
-                $log = [
-                    'id' => $data['user_id'] ?? 'N/A',
-                    'username' => $data['username']  ?? 'N/A',
-                    'email' => $data['email'] ?? 'N/A',
-                    'ruolo' => $data['ruolo'] ?? 'N/A',
-                    'ip' => $data['ip'] ?? '',
-                    'url' => $url ?? '',
-                    'method' => $data['method'] ?? '',
-                    'action' => $data['payload']['action'] ?? '',
-                    'details' => json_encode($dettagli ?? []),
-                    'time' => $timestamp,
-                ];
-
-                // Applichiamo i filtri
-                $logTime = strtotime($log['time']);
-                $start = $startDate ? strtotime($startDate . ' 00:00:00') : null;
-                $end = $endDate ? strtotime($endDate . ' 23:59:59') : null;
-
-                if (
-                    ($search && !str_contains(strtolower(json_encode($log)), strtolower($search))) ||
-                    ($filterRole && $log['ruolo'] !== $filterRole) ||
-                    ($filterMethod && $log['method'] !== $filterMethod) ||
-                    ($start && $logTime < $start) ||
-                    ($end && $logTime > $end)
-                ) {
-                    continue;
-                }
-
-                $logs[] = $log;
-            }
+        // Il resto del codice rimane uguale
+        $user = DB::table('users')->where('id', $data['user_id'])->first();
+        if ($user) {
+            $data['email'] = $user->email;
+            $data['name'] = $user->name;
+        } else {
+            $data['name'] = 'N/A';
+            $data['email'] = 'N/A';
         }
+
+        $log = [
+            'id' => $data['user_id'] ?? 'N/A',
+            'username' => $data['name'] ?? 'N/A',
+            'email' => $data['email'] ?? 'N/A',
+            'ip' => $data['ip'] ?? '',
+            'url' => $data['url'] ?? '',
+            'method' => $data['method'] ?? '',
+            'time' => $timestamp,
+        ];
+
+        // Filtri come prima
+        $logTime = strtotime($log['time']);
+        $start = $startDate ? strtotime($startDate . ' 00:00:00') : null;
+        $end = $endDate ? strtotime($endDate . ' 23:59:59') : null;
+
+        if (
+            ($search && !str_contains(strtolower(json_encode($log)), strtolower($search))) ||
+            ($filterMethod && $log['method'] !== $filterMethod) ||
+            ($start && $logTime < $start) ||
+            ($end && $logTime > $end)
+        ) {
+            continue;
+        }
+
+        $logs[] = $log;
+    }
+}
 
         $logs = array_reverse($logs);
 
@@ -113,7 +103,6 @@ class SocDashboardController extends Controller
         return view('socdashboard.dashboard', [
             'logs' => $paginatedLogs,
             'search' => $search,
-            'filterRole' => $filterRole,
             'filterMethod' => $filterMethod,
             'startDate' => $startDate,
             'endDate' => $endDate,
