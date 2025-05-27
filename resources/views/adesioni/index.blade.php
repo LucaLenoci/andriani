@@ -76,6 +76,19 @@
                     <p class="mb-1"><strong>Creato da:</strong> 
                         {{ $adesione->utenteCreatore->name ?? 'N/A' }}
                     </p>
+                    @if($adesione->updated_at && $adesione->updated_at->ne($adesione->created_at))
+                        @if($adesione->statoAdesione === 'annullata')
+                            <p class="mb-1">
+                                <strong>Annullata da:</strong>
+                                {{ $adesione->utenteModificatore->name ?? 'N/A' }}
+                            </p>
+                        @else
+                            <p class="mb-1">
+                                <strong>Modificata da:</strong>
+                                {{ $adesione->utenteModificatore->name ?? 'N/A' }}
+                            </p>
+                        @endif
+                    @endif
                 </div>
 
                 <div class="col-12 col-md-2 mt-2 d-flex flex-row flex-md-column align-items-end gap-2">
