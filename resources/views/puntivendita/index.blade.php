@@ -26,101 +26,81 @@
     </div>
 @endif
 
-<h3 class="mb-4">Punti Vendita</h3>
+<h3 class="mb-4 text-start">Punti Vendita</h3>
 
-
-<div class="d-flex flex-column flex-md-row justify-content-center align-items-center align-items-md-center mb-4 gap-2">
-    <form action="{{ route('punti-vendita.index') }}" method="GET" class="d-flex flex-column flex-sm-row gap-2">
-        <div class="col-md-3">
+<!-- FILTRI -->
+<div class="mb-4">
+    <form action="{{ route('punti-vendita.index') }}" method="GET" class="row g-2">
+        <div class="col-12 col-sm-6 col-md-3">
             <input type="text" name="search" class="form-control" placeholder="Cerca punto vendita..." value="{{ request('search') }}">
         </div>
-        <div class="col-md-2">
+        <div class="col-12 col-sm-6 col-md-2">
             <select name="regione" class="form-select">
                 <option value="">Tutte le Regioni</option>
                 @foreach ($regioni as $regione)
-                    <option value="{{ $regione }}" {{ request('regione') == $regione ? 'selected' : '' }}>
-                        {{ $regione }}
-                    </option>
+                    <option value="{{ $regione }}" {{ request('regione') == $regione ? 'selected' : '' }}>{{ $regione }}</option>
                 @endforeach
             </select>
         </div>
-        <div class="col-md-2">
+        <div class="col-12 col-sm-6 col-md-2">
             <select name="provincia" class="form-select">
                 <option value="">Tutte le Province</option>
                 @foreach ($province as $provincia)
-                    <option value="{{ $provincia }}" {{ request('provincia') == $provincia ? 'selected' : '' }}>
-                        {{ $provincia }}
-                    </option>
+                    <option value="{{ $provincia }}" {{ request('provincia') == $provincia ? 'selected' : '' }}>{{ $provincia }}</option>
                 @endforeach
             </select>
         </div>
-        <div class="col-md-2">
+        <div class="col-12 col-sm-6 col-md-2">
             <select name="citta" class="form-select">
                 <option value="">Tutte le Città</option>
                 @foreach ($citta as $city)
-                    <option value="{{ $city }}" {{ request('citta') == $city ? 'selected' : '' }}>
-                        {{ $city }}
-                    </option>
+                    <option value="{{ $city }}" {{ request('citta') == $city ? 'selected' : '' }}>{{ $city }}</option>
                 @endforeach
             </select>
         </div>
-        <div class="col-12 d-flex flex-column flex-sm-row gap-2 mt-2">
-            <button type="submit" class="btn btn-primary w-20 w-sm-auto">Filtra</button>
-            <a href="{{ route('punti-vendita.index') }}" class="btn btn-secondary w-20 w-sm-auto">Reset</a>
+        <div class="col-12 col-md-3 d-flex gap-2">
+            <button type="submit" class="btn btn-primary w-100">Filtra</button>
+            <a href="{{ route('punti-vendita.index') }}" class="btn btn-secondary w-100">Reset</a>
         </div>
     </form>
 </div>
 
+<!-- PAGINAZIONE SUPERIORE -->
 <div class="d-flex justify-content-center mb-4">
-    <div>
-        {{ $puntivendita->withQueryString()->onEachSide(1)->links('pagination::bootstrap-4') }}
-    </div>
+    {{ $puntivendita->withQueryString()->onEachSide(1)->links('pagination::bootstrap-4') }}
 </div>
 
+<!-- LISTA PUNTI VENDITA -->
 @forelse($puntivendita as $pv)
-    <div class="card mb-4 shadow border-0">
-        <div class="card-body py-4 px-3">
-            <div class="row align-items-center">
-            <div class="col-12 col-md-2 text-center mb-3 mb-md-0">
-                <h4 class="mb-2">ID: {{ $pv->id }}</h4>
-                <span class="badge bg-primary text-white mt-3 px-3 py-2 fs-6 shadow-sm">
-                Codice: <span class="fw-bold">{{ $pv->codicePuntoVendita }}</span>
-                </span>
-            </div>
-            <div class="col-12 col-md-4 mb-3 mb-md-0">
-                <h5 class="mb-2 text-primary fw-bold">
-                {{ $pv->insegnaPuntoVendita ?? 'N/A' }}
-                </h5>
-                <div class="mb-1">
-                <i class="bi bi-building me-1"></i>
-                <strong>Ragione Sociale:</strong> {{ $pv->ragioneSocialePuntoVendita ?? 'N/A' }}
+    <div class="card mb-4 shadow-sm border-0">
+        <div class="card-body">
+            <div class="row text-center text-md-start align-items-center gy-3">
+                <div class="col-12 col-md-2">
+                    <h5 class="mb-2">ID: {{ $pv->id }}</h5>
+                    <span class="badge bg-primary text-white px-3 py-2 fs-6 shadow-sm">
+                        Codice: <strong>{{ $pv->codicePuntoVendita }}</strong>
+                    </span>
                 </div>
-            </div>
-            <div class="col-12 col-md-4 mb-3 mb-md-0">
-                <div class="mb-1">
-                <i class="bi bi-geo-alt me-1"></i>
-                <strong>Indirizzo:</strong>
-                {{ $pv->indirizzoPuntoVendita }},
-                {{ $pv->capPuntoVendita }}
-                {{ $pv->cittaPuntoVendita }}
-                ({{ $pv->provinciaPuntoVendita }})
+                <div class="col-12 col-md-4">
+                    <h5 class="text-primary fw-bold">{{ $pv->insegnaPuntoVendita ?? 'N/A' }}</h5>
+                    <div><i class="bi bi-building me-1"></i><strong>Ragione Sociale:</strong> {{ $pv->ragioneSocialePuntoVendita ?? 'N/A' }}</div>
                 </div>
-            </div>
-            <div class="col-12 col-md-2 text-center text-md-start">
-                <i class="bi bi-map me-1"></i>
-                <strong>Regione:</strong> {{ $pv->regione->nomeRegione ?? 'N/A' }}
-            </div>
+                <div class="col-12 col-md-4">
+                    <div><i class="bi bi-geo-alt me-1"></i><strong>Indirizzo:</strong> {{ $pv->indirizzoPuntoVendita }}, {{ $pv->capPuntoVendita }} {{ $pv->cittaPuntoVendita }} ({{ $pv->provinciaPuntoVendita }})</div>
+                </div>
+                <div class="col-12 col-md-2">
+                    <i class="bi bi-map me-1"></i><strong>Regione:</strong> {{ $pv->regione->nomeRegione ?? 'N/A' }}
+                </div>
             </div>
         </div>
     </div>
 @empty
-    <div class="alert alert-info">Nessun punto vendita trovato.</div>
+    <div class="alert alert-info text-center">Nessun punto vendita trovato.</div>
 @endforelse
 
+<!-- PAGINAZIONE INFERIORE -->
 <div class="d-flex justify-content-center mb-4">
-    <div>
-        {{ $puntivendita->withQueryString()->onEachSide(1)->links('pagination::bootstrap-4') }}
-    </div>
+    {{ $puntivendita->withQueryString()->onEachSide(1)->links('pagination::bootstrap-4') }}
 </div>
 
 @endsection
