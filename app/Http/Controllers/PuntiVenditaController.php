@@ -5,6 +5,8 @@ use App\Models\PuntoVendita;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Exception;
+use App\Models\Regione;
+use Illuminate\Support\Facades\Http;
 
 class PuntiVenditaController extends Controller
 {
