@@ -47,14 +47,14 @@
                 <div class="col-12 col-md-3 d-flex flex-column align-items-center justify-content-center">
                     <h4 class="mb-2">ID: {{ $pv->id }}</h4>
                     <span class="badge p-3 fs-6" style="min-width: 120px; text-align: center; background-color: #0d6efd; color: #fff;">
-                        {{ $pv->codicePuntoVendita }}
+                        Codice: {{ $pv->codicePuntoVendita }}
                     </span>
                 </div>
                 <div class="col-12 col-md-7">
                     <h5 class="mb-2"><strong>Insegna:</strong> {{ $pv->insegnaPuntoVendita ?? 'N/A' }}</h5>
                     <p class="mb-1"><strong>Ragione Sociale:</strong> {{ $pv->ragioneSocialePuntoVendita ?? 'N/A' }}</p>
                     <p class="mb-1"><strong>Indirizzo:</strong> {{ $pv->indirizzoPuntoVendita }}, {{ $pv->capPuntoVendita }} {{ $pv->cittaPuntoVendita }} ({{ $pv->provinciaPuntoVendita }})</p>
-                    <p class="mb-1"><strong>Regione:</strong> {{ $pv->regione->nome ?? 'N/A' }}</p>
+                    <p class="mb-1"><strong>Regione:</strong> {{ $pv->regione->nomeRegione ?? 'N/A' }}</p>
                 </div>
             </div>
         </div>
