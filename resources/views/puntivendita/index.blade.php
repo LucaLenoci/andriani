@@ -65,8 +65,8 @@
             </select>
         </div>
         <div class="col-12 d-flex flex-column flex-sm-row gap-2 mt-2">
-            <button type="submit" class="btn btn-primary w-100 w-sm-auto">Filtra</button>
-            <a href="{{ route('punti-vendita.index') }}" class="btn btn-secondary w-100 w-sm-auto">Reset</a>
+            <button type="submit" class="btn btn-primary w-20 w-sm-auto">Filtra</button>
+            <a href="{{ route('punti-vendita.index') }}" class="btn btn-secondary w-20 w-sm-auto">Reset</a>
         </div>
     </form>
 </div>
