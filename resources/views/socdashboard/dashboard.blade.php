@@ -67,8 +67,6 @@
                 <th style="width: 10%;">IP</th>
                 <th style="width: 15%;">URL</th>
                 <th style="width: 10%;">Metodo</th>
-                <th style="width: 10%;">Azione</th>
-                <th style="width: 20%;">Dettagli</th>
                 <th style="width: 15%;">Data/Ora</th>
             </tr>
         </thead>
