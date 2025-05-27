@@ -73,7 +73,7 @@
 
 <div class="d-flex justify-content-center mb-4">
     <div>
-        {{ $puntivendita->withQueryString()->->onEachSide(2)links('pagination::bootstrap-4') }}
+        {{ $puntivendita->withQueryString()->onEachSide(2)->links('pagination::bootstrap-4') }}
     </div>
 </div>
 
@@ -119,7 +119,7 @@
 
 <div class="d-flex justify-content-center mb-4">
     <div>
-        {{ $puntivendita->withQueryString()->->onEachSide(2)links('pagination::bootstrap-4') }}
+        {{ $puntivendita->withQueryString()->onEachSide(2)->links('pagination::bootstrap-4') }}
     </div>
 </div>
 
