@@ -46,17 +46,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/aree-di-competenza', [App\Http\Controllers\AreeDiCompetenzaController::class, 'index'])->name('aree-di-competenza.index');
     });
 
-
-    Route::get('/dati-per-mop/{tipo}', function (Request $request, $tipo) {
-        $token = $request->header('API-TOKEN');
-
-        if ($token !== env('API_TOKEN')) {
-            return response()->json(['error' => 'Accesso Negato'], 403);
-        }
-
-        return app(DatiPerMop::class)->perTipo($request, $tipo);
-    });
-
     // SOC con admin check + log
     Route::group(['middleware' => function ($request, $next) {
         if (!Auth::check() || Auth::id() !== 1) {
@@ -76,6 +65,16 @@ Route::middleware('auth')->group(function () {
         Route::get('/dashboard/errori', [App\Http\Controllers\SocDashboardController::class, 'errori'])->name('dashboard.errori');
     });
 
+});
+
+Route::get('/dati-per-mop/{tipo}', function (Request $request, $tipo) {
+    $token = $request->header('API-TOKEN');
+
+    if ($token !== env('API_TOKEN')) {
+        return response()->json(['error' => 'Accesso Negato'], 403);
+    }
+
+    return app(DatiPerMop::class)->perTipo($request, $tipo);
 });
 
 require __DIR__.'/auth.php';
