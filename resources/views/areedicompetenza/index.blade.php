@@ -1,8 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
+<h3 class="mb-4 text-start">Aree di Competenza</h3>
+
 <div class="container">
-    <h3 class="mb-4 text-start">Materiali</h3>
     <div class="row">
         <!-- Area NORD -->
         <div class="col-md-6">
