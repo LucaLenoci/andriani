@@ -52,7 +52,7 @@ Route::middleware('auth')->group(function () {
         $token = $request->header('API-TOKEN');
 
         if ($token !== env('API_TOKEN')) {
-            return response()->json(['error' => 'Token non valido'], 403);
+            return response()->json(['error' => 'Accesso Negato'], 403);
         }
 
         return app(DatiPerMop::class)->perTipo($request, $tipo);
