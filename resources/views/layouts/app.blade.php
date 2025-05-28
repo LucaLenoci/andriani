@@ -184,7 +184,7 @@
               </li>
               <li class="nav-item">
                 <a href="{{ route('aree-di-competenza.index') }}" class="nav-link">
-                  <i class="nav-icon bi bi-globe-americas-fill"></i>
+                  <i class="nav-icon bi bi-globe-americas"></i>
                   <p>Aree di Competenza</p>
                 </a>
               </li>

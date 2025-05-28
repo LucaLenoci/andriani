@@ -12,11 +12,17 @@
                 </div>
                 <div class="card-body">
                     <h5>Responsabile: {{ $nordResponsabile }}</h5>
-                    <ul>
+                    <div class="row">
                         @foreach($nordRegioni as $regione)
-                            <li>{{ $regione }}</li>
+                            <div class="col-md-6 mb-2">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        {{ $regione }}
+                                    </div>
+                                </div>
+                            </div>
                         @endforeach
-                    </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -28,11 +34,17 @@
                 </div>
                 <div class="card-body">
                     <h5>Responsabile: {{ $sudResponsabile }}</h5>
-                    <ul>
+                    <div class="row">
                         @foreach($sudRegioni as $regione)
-                            <li>{{ $regione }}</li>
+                            <div class="col-md-6 mb-2">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        {{ $regione }}
+                                    </div>
+                                </div>
+                            </div>
                         @endforeach
-                    </ul>
+                    </div>
                 </div>
             </div>
         </div>
