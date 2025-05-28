@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AreaDiCompetenza extends Model
 {
-    protected $table = 'areeDiCompetenza';
+    protected $table = 'areedicompetenza';
 
     protected $fillable = [
         'nomeArea',
