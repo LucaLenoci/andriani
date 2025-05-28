@@ -40,7 +40,6 @@ Route::middleware('auth')->group(function () {
         Route::resource('eventi', EventiController::class);
         Route::get('/punti-vendita/search', [PuntiVenditaController::class, 'search'])->name('punti-vendita.search');
         Route::get('/materiali/search', [MaterialiController::class, 'search'])->name('materiali.search');
-        Route::get('/dati-per-mop', [DatiPerMop::class, 'adesioni'])->name('dati-per-mop.adesioni');
         Route::get('/rientro-dati/{id}', [RientroDatiController::class, 'show'])->name('rientro-dati.show');
         Route::get('/punti-vendita', [PuntiVenditaController::class, 'index'])->name('punti-vendita.index');
         Route::get('/materiali', [MaterialiController::class, 'index'])->name('materiali.index');
