@@ -150,6 +150,15 @@ public function create(Request $request)
                                 $fail('La data di inizio adesione deve essere compresa tra la data di inizio e fine dell\'evento: ' . $inizioEvento->format('d/m/Y') . ' e ' . $fineEvento->format('d/m/Y'));
                             }
                         }
+
+                        // Blocco se la data di inizio è tra meno di 15 giorni da oggi, a meno che richiestaFattibilitaAgenzia sia 1
+                        $oggi = \Carbon\Carbon::now('Europe/Rome')->startOfDay();
+                        $dataInizio = \Carbon\Carbon::parse($value)->startOfDay();
+                        $diffGiorni = $oggi->diffInDays($dataInizio, false);
+
+                        if ($diffGiorni < 15 && $request->input('richiestaFattibilitaAgenzia') != 1) {
+                            $fail('La data di inizio adesione deve essere almeno tra 15 giorni da oggi, a meno che non ci sia stata la conferma di fattibilità da parte dell\'agenzia. In tal caso bisogna impostare Richiesta Fattibilità Agenzia su "Si"');
+                        }
                     }
                 ],
                 'dataFineAdesione' => [
@@ -533,6 +542,15 @@ public function create(Request $request)
                             if ($data->lt($inizioEvento) || $data->gt($fineEvento)) {
                                 $fail('La data di inizio adesione deve essere compresa tra la data di inizio e fine dell\'evento: ' . $inizioEvento->format('d/m/Y') . ' e ' . $fineEvento->format('d/m/Y'));
                             }
+                        }
+
+                        // Blocco se la data di inizio è tra meno di 15 giorni da oggi, a meno che richiestaFattibilitaAgenzia sia 1
+                        $oggi = \Carbon\Carbon::now('Europe/Rome')->startOfDay();
+                        $dataInizio = \Carbon\Carbon::parse($value)->startOfDay();
+                        $diffGiorni = $oggi->diffInDays($dataInizio, false);
+
+                        if ($diffGiorni < 15 && $request->input('richiestaFattibilitaAgenzia') != 1) {
+                            $fail('La data di inizio adesione deve essere almeno tra 15 giorni da oggi, a meno che non ci sia stata la conferma di fattibilità da parte dell\'agenzia. In tal caso bisogna impostare Richiesta Fattibilità Agenzia su "Si"');
                         }
                     }
                 ],
