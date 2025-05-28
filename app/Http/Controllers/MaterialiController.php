@@ -35,7 +35,8 @@ class MaterialiController extends Controller
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('nomeMateriale', 'like', '%' . $search . '%')
-                  ->orWhere('codiceIdentificativoMateriale', 'like', '%' . $search . '%');
+                  ->orWhere('codiceIdentificativoMateriale', 'like', '%' . $search . '%')
+                    ->orWhere('id', $search);
             });
         }
 
