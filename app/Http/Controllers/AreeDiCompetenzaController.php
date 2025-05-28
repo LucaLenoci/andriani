@@ -25,7 +25,7 @@ class AreeDiCompetenzaController extends Controller
         $nordRegioni = ['Piemonte', 'Lombardia', 'Veneto', 'Liguria', 'Emilia-Romagna', 'Friuli-Venezia Giulia', 'Trentino-Alto Adige', 'Valle d\'Aosta'];
         $sudRegioni = ['Abruzzo', 'Molise', 'Campania', 'Puglia', 'Basilicata', 'Calabria', 'Sicilia', 'Sardegna'];
 
-        return view('aree_di_competenza.index', compact(
+        return view('areedicompetenza.index', compact(
             'nordResponsabile',
             'sudResponsabile',
             'nordRegioni',
