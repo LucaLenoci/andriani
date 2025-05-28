@@ -8,30 +8,44 @@ use App\Models\Adesione;
 use App\Models\Evento;
 use App\Models\PuntoVendita;
 use App\Models\Giornata;
+use Carbon\Carbon;
 
 class DatiPerMop extends Controller
 {
     public function perTipo(Request $request, $tipo)
     {
+        $yesterday = Carbon::now()->subDay()->setTime(3, 0, 0);
+        $today = Carbon::now()->setTime(3, 0, 0);
+
         switch ($tipo) {
             case 'adesioni':
-                $result = Adesione::all();
-                $result->transform(function ($item) {
-                    if (isset($item->idPuntoVendita)) {
-                        $puntoVendita = PuntoVendita::find($item->idPuntoVendita);
-                        $item->codicePuntoVendita = $puntoVendita ? $puntoVendita->codicePuntoVendita : null;
-                        unset($item->idPuntoVendita);
-                    }
-                    return $item;
-                });
+                $result = $this->getAdesioniConCodice();
                 break;
 
             case 'eventi':
                 $result = Evento::all();
                 break;
 
-            case 'ultima-adesione':
-                $result = Adesione::orderBy('created_at', 'desc')->first();
+            case 'ultime-adesioni':
+                $result = Adesione::where(function ($query) use ($yesterday, $today) {
+                    $query->whereBetween('dataInserimentoAdesione', [$yesterday, $today])
+                          ->orWhereBetween('dataModificaAdesione', [$yesterday, $today]);
+                })->get();
+                $result = $this->trasformaAdesioniConCodice($result);
+                break;
+
+            case 'ultimi-eventi':
+                $result = Evento::whereBetween('dataEvento', [$yesterday, $today])->get();
+                break;
+
+            case 'ultime-giornate':
+                $idAdesione = $request->query('idAdesione');
+                if (!$idAdesione) {
+                    return response()->json(['error' => 'Parametro idAdesione mancante'], 400);
+                }
+                $result = Giornata::whereBetween('dataGiornata', [$yesterday, $today])
+                    ->where('idAdesione', $idAdesione)
+                    ->get();
                 break;
 
             case 'giornate':
@@ -49,4 +63,27 @@ class DatiPerMop extends Controller
         return response()->json($result);
     }
 
+    /**
+     * Restituisce tutte le adesioni con codice punto vendita al posto dell'ID.
+     */
+    private function getAdesioniConCodice()
+    {
+        $adesioni = Adesione::all();
+        return $this->trasformaAdesioniConCodice($adesioni);
+    }
+
+    /**
+     * Trasforma una collezione di adesioni sostituendo idPuntoVendita con codicePuntoVendita.
+     */
+    private function trasformaAdesioniConCodice($adesioni)
+    {
+        return $adesioni->map(function ($item) {
+            if ($item->idPuntoVendita) {
+                $puntoVendita = PuntoVendita::find($item->idPuntoVendita);
+                $item->codicePuntoVendita = $puntoVendita ? $puntoVendita->codicePuntoVendita : null;
+                unset($item->idPuntoVendita);
+            }
+            return $item;
+        });
+    }
 }
