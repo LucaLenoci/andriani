@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Exception;
 
-class PuntiVenditaController extends Controller
+class MaterialiController extends Controller
 {
     public function search(Request $request)
     {
