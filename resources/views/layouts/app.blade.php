@@ -181,6 +181,13 @@
                     <i class="nav-icon bi bi-box-seam-fill"></i>
                   <p>Materiali</p>
                 </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('aree-competenza.index') }}" class="nav-link">
+                    <i class="nav-icon bi bi-globe-americas-fill"></i>
+                  <p>Aree di Competenza</p>
+                </a>
+              </li>
             </ul>
             <!--end::Sidebar Menu-->
           </nav>

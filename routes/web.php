@@ -43,6 +43,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/rientro-dati/{id}', [RientroDatiController::class, 'show'])->name('rientro-dati.show');
         Route::get('/punti-vendita', [PuntiVenditaController::class, 'index'])->name('punti-vendita.index');
         Route::get('/materiali', [MaterialiController::class, 'index'])->name('materiali.index');
+        Route::get('/aree-di-competenza', [App\Http\Controllers\AreeDiCompetenzaController::class, 'index'])->name('aree-di-competenza.index');
     });
 
     // SOC con admin check + log
