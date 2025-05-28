@@ -46,23 +46,14 @@
     <div class="card mb-4 shadow-sm border-0">
         <div class="card-body">
             <div class="row text-center text-md-start align-items-center gy-3">
-                <div class="col-12 col-md-2">
+                <div class="col-12 col-md-2 mb-2 mb-md-0">
                     <h5 class="mb-2">ID: {{ $materiale->id }}</h5>
                     <span class="badge bg-primary text-white px-3 py-2 fs-6 shadow-sm">
                         Codice: <strong>{{ $materiale->codiceIdentificativoMateriale }}</strong>
                     </span>
                 </div>
-                <div class="col-12 col-md-4">
-                    <h5 class="text-primary fw-bold">{{ $materiale->nomeMateriale ?? 'N/A' }}</h5>
-                    <div><i class="bi bi-person me-1"></i><strong>Creato da:</strong> {{ $materiale->idUtenteCreatoreMateriale ?? 'N/A' }}</div>
-                </div>
-                <div class="col-12 col-md-3">
-                    <div><i class="bi bi-calendar-plus me-1"></i><strong>Inserito il:</strong> {{ $materiale->dataInserimentoMateriale ?? 'N/A' }}</div>
-                    <div><i class="bi bi-calendar-check me-1"></i><strong>Modificato il:</strong> {{ $materiale->dataModificaMateriale ?? 'N/A' }}</div>
-                </div>
-                <div class="col-12 col-md-3">
-                    <div><i class="bi bi-person-gear me-1"></i><strong>Modificato da:</strong> {{ $materiale->idUtenteModificatoreMateriale ?? 'N/A' }}</div>
-                    <div><i class="bi bi-info-circle me-1"></i><strong>Stato:</strong> {{ $materiale->statoMateriale ?? 'N/A' }}</div>
+                <div class="col-12 col-md-4 mb-2 mb-md-0">
+                    <h5 class="text-primary fw-bold mb-0">{{ $materiale->nomeMateriale ?? 'N/A' }}</h5>
                 </div>
             </div>
         </div>
