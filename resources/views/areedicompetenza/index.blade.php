@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <h1>Aree di Competenza e Responsabili</h1>
+    <h1 class="mb-4" >Aree di Competenza e Responsabili</h1>
     <div class="row">
         <!-- Area NORD -->
         <div class="col-md-6">
