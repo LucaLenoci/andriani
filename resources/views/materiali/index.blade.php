@@ -48,6 +48,8 @@
             <div class="row text-center text-md-start align-items-center gy-3">
                 <div class="col-12 col-md-2 mb-2 mb-md-0">
                     <h5 class="mb-2">ID: {{ $materiale->id }}</h5>
+                </div>
+                <div class="col-12 col-md-4 mb-2 mb-md-0">
                     <span class="badge bg-primary text-white px-3 py-2 fs-6 shadow-sm">
                         Codice: <strong>{{ $materiale->codiceIdentificativoMateriale }}</strong>
                     </span>
