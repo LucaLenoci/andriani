@@ -25,4 +25,22 @@ class PuntiVenditaController extends Controller
 
         return response()->json($puntiVendita);
     }
+
+    public function index(Request $request)
+    {
+        $search = $request->input('search');
+
+        $query = Materiale::query();
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('nomeMateriale', 'like', '%' . $search . '%')
+                  ->orWhere('codiceIdentificativoMateriale', 'like', '%' . $search . '%');
+            });
+        }
+
+        $materiali = $query->orderBy('id', 'desc')->paginate(10);
+
+        return view('materiali.index', compact('materiali'));
+    }
 }

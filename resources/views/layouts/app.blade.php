@@ -176,6 +176,11 @@
                   <p>Punti Vendita</p>
                 </a>
               </li>
+              <li class="nav-item">
+                <a href="{{ route('materiali.index') }}" class="nav-link">
+                    <i class="nav-icon bi bi-box-seam-fill"></i>
+                  <p>Materiali</p>
+                </a>
             </ul>
             <!--end::Sidebar Menu-->
           </nav>

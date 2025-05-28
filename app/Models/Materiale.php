@@ -3,9 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-
 
 class Materiale extends Model
 {
@@ -16,5 +14,10 @@ class Materiale extends Model
     protected $fillable = [
         'nomeMateriale',
         'codiceIdentificativoMateriale',
+        'idUtenteCreatoreMateriale',
+        'dataInserimentoMateriale',
+        'idUtenteModificatoreMateriale',
+        'dataModificaMateriale',
+        'statoMateriale',
     ];
 }

@@ -42,6 +42,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/dati-per-mop', [DatiPerMop::class, 'adesioni'])->name('dati-per-mop.adesioni');
         Route::get('/rientro-dati/{id}', [RientroDatiController::class, 'show'])->name('rientro-dati.show');
         Route::get('/punti-vendita', [PuntiVenditaController::class, 'index'])->name('punti-vendita.index');
+        Route::get('/materiali', [MaterialiController::class, 'index'])->name('materiali.index');
     });
 
     // SOC con admin check + log
